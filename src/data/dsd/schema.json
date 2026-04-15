@@ -101,6 +101,36 @@
           "description": "Whether traversal works both ways. Most edges are bidirectional."
         }
       }
+    },
+
+    "remix": {
+      "type": "object",
+      "description": "A remix layer on a writing. Lives inside the parent entry, accessible via hash fragment (#remixSlug). Author-locked original stays untouched — remixes are additive layers.",
+      "required": ["slug", "author", "body", "created"],
+      "properties": {
+        "slug": { "type": "string", "description": "URL fragment identifier, e.g. 'brandisremix'" },
+        "author": { "type": "string" },
+        "title": { "type": "string", "description": "Optional remix title" },
+        "body": { "type": "string", "description": "The remixed text" },
+        "created": { "type": "string", "format": "date" },
+        "type": {
+          "type": "string",
+          "enum": ["remix", "annotation", "critique", "translation", "fork"],
+          "description": "What kind of derivative this is"
+        },
+        "promoted": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, this remix is shown by default (A/B or editorial promotion)"
+        },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "views": { "type": "integer", "default": 0 },
+            "shares": { "type": "integer", "default": 0 }
+          }
+        }
+      }
     }
   }
 }

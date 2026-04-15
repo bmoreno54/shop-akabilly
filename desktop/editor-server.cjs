@@ -142,6 +142,103 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Route: POST /api/writings/:slug/remix — add a remix layer
+  const remixMatch = req.url?.match(/^\/api\/writings\/([a-z0-9-]+)\/remix$/);
+  if (remixMatch && req.method === 'POST') {
+    const slug = remixMatch[1];
+    const dataFile = path.join(SITE_DATA_DIR, `${slug}.json`);
+
+    if (!fs.existsSync(dataFile)) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: `Writing "${slug}" not found` }));
+      return;
+    }
+
+    try {
+      const rawBody = await readBody(req);
+      const remix = JSON.parse(rawBody);
+
+      if (!remix.slug || !remix.author || !remix.body) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: 'Remix needs slug, author, body' }));
+        return;
+      }
+
+      // Add defaults
+      remix.created = remix.created || new Date().toISOString().slice(0, 10);
+      remix.type = remix.type || 'remix';
+      remix.promoted = remix.promoted || false;
+      remix.stats = { views: 0, shares: 0 };
+
+      // Update writing entry
+      const entry = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      if (!entry.remixes) entry.remixes = [];
+      // Don't duplicate
+      entry.remixes = entry.remixes.filter(r => r.slug !== remix.slug);
+      entry.remixes.push(remix);
+      fs.writeFileSync(dataFile, JSON.stringify(entry, null, 2), 'utf-8');
+
+      // Register remix as DSD node + edge
+      const graphFile = path.join(SITE_DATA_DIR, '..', 'dsd', 'graph.json');
+      if (fs.existsSync(graphFile)) {
+        const graph = JSON.parse(fs.readFileSync(graphFile, 'utf-8'));
+        const remixNodeId = `${slug}-${remix.slug}`;
+
+        // Add node if not exists
+        if (!graph.nodes.find(n => n.id === remixNodeId)) {
+          graph.nodes.push({
+            id: remixNodeId,
+            type: 'writing',
+            title: `${entry.title} (${remix.title || remix.author + "'s " + remix.type})`,
+            url: `/writings/${slug}#${remix.slug}`,
+            surface: {
+              thumbnail: null,
+              preview: remix.body.split('\n').find(l => l.trim()) || '',
+              medium: remix.type,
+              accent: null,
+            },
+            semantic: {
+              tags: [...(entry.tags || []), 'remix'],
+              themes: [],
+              temporalAnchor: remix.created,
+              provenance: `${remix.type}-by-${remix.author}`,
+            },
+          });
+        }
+
+        // Add remix-of edge
+        if (!graph.edges.find(e => e.source === remixNodeId && e.target === slug)) {
+          graph.edges.push({
+            source: remixNodeId,
+            target: slug,
+            type: 'remix-of',
+            weight: 0.75,
+            origin: 'authored',
+            confidence: 1.0,
+            discoveredAt: new Date().toISOString(),
+            context: `${remix.type} by ${remix.author}`,
+            bidirectional: true,
+          });
+        }
+
+        graph.meta.nodeCount = graph.nodes.length;
+        graph.meta.edgeCount = graph.edges.length;
+        graph.meta.lastUpdated = new Date().toISOString();
+        fs.writeFileSync(graphFile, JSON.stringify(graph, null, 2), 'utf-8');
+        console.log(`[dsd] registered remix node ${remixNodeId}`);
+      }
+
+      console.log(`[remix] added ${remix.slug} to ${slug}`);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, slug: remix.slug }));
+    } catch (err) {
+      console.error('[error]', err);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: err.message }));
+    }
+    return;
+  }
+
   // Fallback
   res.writeHead(404, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ ok: false, error: 'Not found' }));

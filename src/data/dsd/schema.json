@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "deaconstruckdead graph schema",
+  "description": "Emergent linking engine for the akabilly subdomain mesh. Nodes are content, edges are connections — some authored, most discovered.",
+
+  "definitions": {
+    "node": {
+      "type": "object",
+      "required": ["id", "type", "title", "surface"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique node ID, matches content slug or catalog ID"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["visual", "audio", "writing", "product", "changelog", "fragment", "video", "collection"],
+          "description": "Content type this node represents"
+        },
+        "title": { "type": "string" },
+        "url": {
+          "type": "string",
+          "description": "Canonical page URL for this node"
+        },
+        "surface": {
+          "type": "object",
+          "description": "Display hints for when this node appears in DSD connections",
+          "properties": {
+            "thumbnail": { "type": "string", "description": "Image path or null" },
+            "preview": { "type": "string", "description": "Short text excerpt, first line of lyrics, etc." },
+            "medium": { "type": "string", "description": "Human-readable medium label" },
+            "accent": { "type": "string", "description": "Optional color hint derived from content" }
+          }
+        },
+        "semantic": {
+          "type": "object",
+          "description": "Machine-readable semantic hooks for AI discovery",
+          "properties": {
+            "tags": { "type": "array", "items": { "type": "string" } },
+            "themes": { "type": "array", "items": { "type": "string" }, "description": "AI-derived thematic tags" },
+            "temporalAnchor": { "type": "string", "format": "date", "description": "When this was created" },
+            "provenance": { "type": "string", "description": "Creation method fingerprint" },
+            "textFingerprint": { "type": "string", "description": "Hash or embedding ref for semantic similarity" }
+          }
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["source", "target", "type", "weight", "origin"],
+      "properties": {
+        "source": { "type": "string", "description": "Source node ID" },
+        "target": { "type": "string", "description": "Target node ID" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "pairs-with",
+            "cover-art-for",
+            "remix-of",
+            "stem-of",
+            "forked-from",
+            "lyrics-for",
+            "temporal-proximity",
+            "semantic-echo",
+            "shared-theme",
+            "user-path",
+            "ai-discovered",
+            "collection-sibling"
+          ],
+          "description": "Edge type. First six are authored, rest are discovered."
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Connection strength. Authored edges start at 1.0, discovered edges grow from activity."
+        },
+        "origin": {
+          "type": "string",
+          "enum": ["authored", "catalog", "activity", "ai-shadow", "temporal", "semantic"],
+          "description": "How this edge was created. Authored = hand-placed. Others are discovered."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "For discovered edges, how confident the discovery signal is."
+        },
+        "discoveredAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this edge was first created or last strengthened."
+        },
+        "context": {
+          "type": "string",
+          "description": "Human-readable note about why this connection exists."
+        },
+        "bidirectional": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether traversal works both ways. Most edges are bidirectional."
+        }
+      }
+    }
+  }
+}

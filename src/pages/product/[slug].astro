@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AudioPlayer from '../../components/AudioPlayer.astro';
+import DSDConnections from '../../components/DSDConnections.astro';
 import products from '../../data/products.json';
 
 export function getStaticPaths() {
@@ -47,14 +48,14 @@ const { product } = Astro.props;
       </button>
       <p class="buy-note">Fine art giclée print on archival paper. Printed and shipped by Prodigi.</p>
 
-      {product.pairedWith && (
+      {product.audioSrc && (
         <AudioPlayer
-          src={product.audioSrc || ''}
-          title={product.pairedWith.title}
-          externalUrl={product.pairedWith.url}
-          externalPlatform={product.pairedWith.platform}
+          src={product.audioSrc}
+          title={`${product.title} (song)`}
         />
       )}
+
+      <DSDConnections nodeId={product.slug} />
     </div>
   </article>
 </Base>

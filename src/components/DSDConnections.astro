@@ -1,0 +1,171 @@
+---
+/**
+ * deaconstruckdead surface component
+ * 
+ * Renders emergent connections for a given node.
+ * Reads the DSD graph, finds all edges touching this node,
+ * resolves the connected nodes, and surfaces them weighted by
+ * connection strength. Designed to be dropped into any page.
+ * 
+ * As the graph grows (user activity, AI shadow work, new catalog
+ * entries), the connections this component surfaces will shift
+ * without any page-level changes. The page just says "I am this
+ * node" and DSD handles the rest.
+ */
+
+interface Props {
+  nodeId: string;
+  limit?: number;
+  heading?: string;
+}
+
+const { nodeId, limit = 6, heading = 'Connected' } = Astro.props;
+
+import graph from '../data/dsd/graph.json';
+
+// Find all edges where this node is source or target
+const edges = graph.edges
+  .filter(e => e.source === nodeId || e.target === nodeId)
+  .sort((a, b) => b.weight - a.weight)
+  .slice(0, limit);
+
+// Resolve connected node IDs
+const connectedIds = edges.map(e =>
+  e.source === nodeId ? e.target : e.source
+);
+
+// Build display items: node info + edge context
+const nodeMap = Object.fromEntries(graph.nodes.map(n => [n.id, n]));
+const connections = edges
+  .map(e => {
+    const otherId = e.source === nodeId ? e.target : e.source;
+    const node = nodeMap[otherId];
+    if (!node) return null;
+    return { node, edge: e };
+  })
+  .filter(Boolean);
+
+const edgeTypeLabels: Record<string, string> = {
+  'pairs-with': 'paired',
+  'cover-art-for': 'cover art',
+  'remix-of': 'remix',
+  'stem-of': 'stem',
+  'forked-from': 'forked',
+  'lyrics-for': 'lyrics',
+  'temporal-proximity': 'same era',
+  'semantic-echo': 'echo',
+  'shared-theme': 'shared thread',
+  'user-path': 'frequently visited together',
+  'ai-discovered': 'discovered',
+  'collection-sibling': 'same collection',
+};
+---
+
+{connections.length > 0 && (
+  <nav class="dsd-connections" aria-label="Connected works">
+    <h3 class="dsd-heading">{heading}</h3>
+    <ul class="dsd-list">
+      {connections.map(({ node, edge }) => (
+        <li class="dsd-item" data-edge-type={edge.type} data-weight={edge.weight}>
+          {node.url ? (
+            <a href={node.url} class="dsd-link">
+              {node.surface.thumbnail && (
+                <img src={node.surface.thumbnail} alt="" class="dsd-thumb" loading="lazy" />
+              )}
+              <div class="dsd-info">
+                <span class="dsd-node-title">{node.title}</span>
+                <span class="dsd-edge-label">{edgeTypeLabels[edge.type] || edge.type}</span>
+                {edge.context && <span class="dsd-context">{edge.context}</span>}
+              </div>
+            </a>
+          ) : (
+            <div class="dsd-link dsd-no-url">
+              {node.surface.thumbnail && (
+                <img src={node.surface.thumbnail} alt="" class="dsd-thumb" loading="lazy" />
+              )}
+              <div class="dsd-info">
+                <span class="dsd-node-title">{node.title}</span>
+                <span class="dsd-edge-label">{edgeTypeLabels[edge.type] || edge.type}</span>
+              </div>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .dsd-connections {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .dsd-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+  .dsd-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .dsd-item {
+    flex: 1 1 14rem;
+    max-width: 20rem;
+  }
+  .dsd-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  a.dsd-link:hover {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+  .dsd-no-url {
+    opacity: 0.65;
+    cursor: default;
+  }
+  .dsd-thumb {
+    width: 3rem;
+    height: 3rem;
+    border-radius: calc(var(--radius) * 0.5);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .dsd-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .dsd-node-title {
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  .dsd-edge-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .dsd-context {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+</style>

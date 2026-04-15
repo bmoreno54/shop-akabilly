@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AudioPlayer from '../../components/AudioPlayer.astro';
+import DSDConnections from '../../components/DSDConnections.astro';
 
 const writingModules = import.meta.glob('../../data/writings/*.json', { eager: true });
 const allWritings = Object.values(writingModules).map((m: any) => m.default);
@@ -36,7 +37,7 @@ const typeLabels: Record<string, string> = {
       </div>
     )}
 
-    <div class="writing-body">
+    <div class="writing-body" id="writing-body" data-slug={writing.slug}>
       {lines.map((line: string) => (
         line.trim() === '' ? <br /> : <p class="writing-line">{line}</p>
       ))}
@@ -47,11 +48,7 @@ const typeLabels: Record<string, string> = {
         <p class="author-lock">Original text by {writing.artist}. All rights reserved.</p>
         <p class="remix-note">Fork it, remix it, annotate it, quote it — just don't edit the source.</p>
       </div>
-      {writing.pairedWith && (
-        <a href={writing.pairedWith.url} class="paired-link">
-          See paired work: {writing.pairedWith.title} →
-        </a>
-      )}
+      <DSDConnections nodeId={writing.slug} />
     </footer>
   </article>
 </Base>
@@ -114,4 +111,101 @@ const typeLabels: Record<string, string> = {
     transition: opacity 0.2s;
   }
   .paired-link:hover { opacity: 0.8; }
+
+  /* author edit mode */
+  .author-edit-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.5rem;
+    background: rgba(212, 168, 83, 0.08);
+    border: 1px solid rgba(212, 168, 83, 0.25);
+    border-radius: var(--radius);
+    font-size: 0.75rem;
+    color: var(--color-accent);
+  }
+  .author-edit-bar button {
+    background: var(--color-accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .author-edit-bar .edit-label {
+    flex: 1;
+  }
 </style>
+
+<script>
+  // Author edit mode — only active on localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    const body = document.getElementById('writing-body');
+    const slug = body?.dataset.slug;
+    if (body && slug) {
+      const bar = document.createElement('div');
+      bar.className = 'author-edit-bar';
+      bar.innerHTML = `
+        <span class="edit-label">author mode</span>
+        <button id="edit-writing-btn">edit</button>
+        <button id="save-writing-btn" style="display:none">save to vault</button>
+        <button id="cancel-edit-btn" style="display:none">cancel</button>
+      `;
+      body.parentElement?.insertBefore(bar, body);
+
+      const editBtn = document.getElementById('edit-writing-btn');
+      const saveBtn = document.getElementById('save-writing-btn');
+      const cancelBtn = document.getElementById('cancel-edit-btn');
+      let originalHTML = '';
+
+      editBtn?.addEventListener('click', () => {
+        // Switch to editable textarea
+        originalHTML = body.innerHTML;
+        const lines = Array.from(body.querySelectorAll('.writing-line'))
+          .map(el => el.textContent || '');
+        const text = lines.join('\n');
+        body.innerHTML = `<textarea id="writing-editor" style="
+          width:100%; min-height:20rem; background:var(--color-bg);
+          color:var(--color-text); border:1px solid var(--color-border);
+          border-radius:var(--radius); padding:1rem; font-family:inherit;
+          font-size:1rem; line-height:1.7; resize:vertical;
+        ">${text}</textarea>`;
+        editBtn.style.display = 'none';
+        saveBtn!.style.display = '';
+        cancelBtn!.style.display = '';
+      });
+
+      cancelBtn?.addEventListener('click', () => {
+        body.innerHTML = originalHTML;
+        editBtn!.style.display = '';
+        saveBtn!.style.display = 'none';
+        cancelBtn!.style.display = 'none';
+      });
+
+      saveBtn?.addEventListener('click', async () => {
+        const editor = document.getElementById('writing-editor') as HTMLTextAreaElement;
+        if (!editor) return;
+        const newText = editor.value;
+        try {
+          const res = await fetch(`http://localhost:7700/api/writings/${slug}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ body: newText }),
+          });
+          const result = await res.json();
+          if (result.ok) {
+            // Refresh to show updated content
+            window.location.reload();
+          } else {
+            alert('Save failed: ' + (result.error || 'unknown error'));
+          }
+        } catch (err) {
+          alert('Could not reach desktop editor at localhost:7700. Is it running?');
+        }
+      });
+    }
+  }
+</script>

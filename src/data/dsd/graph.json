@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "version": "0.1.0",
+    "description": "deaconstruckdead graph — the living connective tissue of akabilly.com",
+    "lastUpdated": "2026-04-14T21:00:00Z",
+    "nodeCount": 3,
+    "edgeCount": 3
+  },
+  "nodes": [
+    {
+      "id": "lode",
+      "type": "product",
+      "title": "Lode",
+      "url": "/product/lode",
+      "surface": {
+        "thumbnail": "/images/lode.jpg",
+        "preview": "Mixed media on canvas — acrylic, oil pastels, chalk pastels, pens, pencils, markers",
+        "medium": "print",
+        "accent": "#d4a853"
+      },
+      "semantic": {
+        "tags": ["painting", "mixed-media", "impreschernism"],
+        "themes": [],
+        "temporalAnchor": "2022-03-10",
+        "provenance": "hand-made"
+      }
+    },
+    {
+      "id": "lode-song",
+      "type": "audio",
+      "title": "Lode (song)",
+      "url": null,
+      "surface": {
+        "thumbnail": "/images/lode.jpg",
+        "preview": "Original song — 3m 6s",
+        "medium": "music",
+        "accent": "#d4a853"
+      },
+      "semantic": {
+        "tags": ["song", "original", "foundational"],
+        "themes": [],
+        "temporalAnchor": "2022-03-10",
+        "provenance": "digital-recording"
+      }
+    },
+    {
+      "id": "lode-lyrics",
+      "type": "writing",
+      "title": "Lode (lyrics)",
+      "url": "/writings/lode-lyrics",
+      "surface": {
+        "thumbnail": null,
+        "preview": "i'm not here to get rich / i already struck gold",
+        "medium": "lyrics",
+        "accent": null
+      },
+      "semantic": {
+        "tags": ["lyrics", "lode", "impreschernism"],
+        "themes": [],
+        "temporalAnchor": "2022-03-10",
+        "provenance": "hand-written"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "lode",
+      "target": "lode-song",
+      "type": "pairs-with",
+      "weight": 1.0,
+      "origin": "authored",
+      "confidence": 1.0,
+      "discoveredAt": "2026-04-14T21:00:00Z",
+      "context": "Visual art and song created together as a unified pair",
+      "bidirectional": true
+    },
+    {
+      "source": "lode-song",
+      "target": "lode-lyrics",
+      "type": "lyrics-for",
+      "weight": 1.0,
+      "origin": "authored",
+      "confidence": 1.0,
+      "discoveredAt": "2026-04-14T21:00:00Z",
+      "context": "Lyrics written for and performed in this song",
+      "bidirectional": true
+    },
+    {
+      "source": "lode",
+      "target": "lode-lyrics",
+      "type": "pairs-with",
+      "weight": 0.85,
+      "origin": "catalog",
+      "confidence": 1.0,
+      "discoveredAt": "2026-04-14T21:00:00Z",
+      "context": "Visual art and lyrics share the same origin moment and thematic core",
+      "bidirectional": true
+    }
+  ]
+}

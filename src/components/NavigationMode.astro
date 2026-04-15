@@ -1,0 +1,310 @@
+---
+/**
+ * NavigationMode — quiet / explore / guided toggle
+ *
+ * Quiet:   content only, DSD connections and peripherals hidden
+ * Explore: default, full DSD surfacing weighted by session trail
+ * Guided:  follow a path (random walk, procedural, or pre-crafted)
+ *          with prev/next controls and easy off-ramp back to explore
+ *
+ * Renders as a minimal pill toggle in the bottom-left area.
+ * Dispatches 'akb-mode-change' events for other components to react.
+ */
+---
+
+<nav class="nav-mode" id="nav-mode" aria-label="Navigation mode">
+  <div class="mode-pills">
+    <button class="mode-pill" data-mode="quiet" title="Content only — hide connections">
+      <span class="pill-icon">&#9673;</span>
+      <span class="pill-label">quiet</span>
+    </button>
+    <button class="mode-pill active" data-mode="explore" title="Explore — session-aware connections">
+      <span class="pill-icon">&#10038;</span>
+      <span class="pill-label">explore</span>
+    </button>
+    <button class="mode-pill" data-mode="guided" title="Follow a path">
+      <span class="pill-icon">&#10148;</span>
+      <span class="pill-label">guided</span>
+    </button>
+  </div>
+  <!-- Guided path controls — visible only in guided mode -->
+  <div class="guided-controls" id="guided-controls" style="display:none;">
+    <button class="guided-btn" id="guided-prev" title="Previous">&#8592;</button>
+    <span class="guided-info" id="guided-info">—</span>
+    <button class="guided-btn" id="guided-next" title="Next">&#8594;</button>
+    <button class="guided-btn guided-exit" id="guided-exit" title="Exit guided mode">&#10005;</button>
+  </div>
+
+  <!-- Guided path picker — shown when entering guided mode -->
+  <div class="guided-picker" id="guided-picker" style="display:none;">
+    <p class="picker-label">choose a path</p>
+    <button class="path-option" data-path="random">random walk</button>
+    <button class="path-option" data-path="chronological">chronological</button>
+    <button class="path-option" data-path="deep-cuts">deep cuts</button>
+    <button class="path-option" data-path="thematic">thematic thread</button>
+  </div>
+</nav>
+<style>
+  .nav-mode {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 900;
+    font-family: var(--font-body);
+  }
+  .mode-pills {
+    display: flex;
+    gap: 0;
+    background: var(--color-surface, #141414);
+    border: 1px solid var(--color-border, #2a2a2a);
+    border-radius: 2rem;
+    padding: 0.15rem;
+    backdrop-filter: blur(12px);
+  }
+  .mode-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.65rem;
+    background: transparent;
+    border: none;
+    border-radius: 1.5rem;
+    color: var(--color-text-muted, #666);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .mode-pill:hover {
+    color: var(--color-text, #e0e0e0);
+  }
+  .mode-pill.active {
+    background: var(--color-bg, #0a0a0a);
+    color: var(--color-accent, #d4a853);
+    font-weight: 600;
+  }
+  .pill-icon { font-size: 0.75rem; }
+  .pill-label { letter-spacing: 0.04em; }
+  /* Guided controls */
+  .guided-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-surface, #141414);
+    border: 1px solid var(--color-accent, #d4a853);
+    border-radius: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text, #e0e0e0);
+    backdrop-filter: blur(12px);
+  }
+  .guided-btn {
+    background: none;
+    border: none;
+    color: var(--color-accent, #d4a853);
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    transition: background 0.15s;
+  }
+  .guided-btn:hover { background: rgba(212, 168, 83, 0.12); }
+  .guided-exit { color: var(--color-text-muted, #666); font-size: 0.75rem; }
+  .guided-info {
+    flex: 1;
+    text-align: center;
+    color: var(--color-text-muted, #999);
+    font-size: 0.6875rem;
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Guided picker */
+  .guided-picker {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: var(--color-surface, #141414);
+    border: 1px solid var(--color-border, #2a2a2a);
+    border-radius: var(--radius, 0.5rem);
+    backdrop-filter: blur(12px);
+  }
+  .picker-label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted, #666);
+    margin-bottom: 0.5rem;
+  }
+  .path-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.25rem;
+    background: transparent;
+    border: 1px solid var(--color-border, #2a2a2a);
+    border-radius: 0.375rem;
+    color: var(--color-text, #e0e0e0);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .path-option:hover {
+    border-color: var(--color-accent, #d4a853);
+    background: rgba(212, 168, 83, 0.06);
+  }
+
+  @media (max-width: 480px) {
+    .pill-label { display: none; }
+    .mode-pill { padding: 0.4rem 0.5rem; }
+  }
+</style>
+<script>
+  import {
+    getMode, setMode,
+    getGuidedPath, setGuidedPath, clearGuidedPath,
+    getGuidedIndex, advanceGuided, retreatGuided,
+    generateRandomWalk,
+  } from '../scripts/session-trail.js';
+
+  (() => {
+    const pills = document.querySelectorAll('.mode-pill');
+    const guidedControls = document.getElementById('guided-controls');
+    const guidedPicker = document.getElementById('guided-picker');
+    const guidedInfo = document.getElementById('guided-info');
+    const prevBtn = document.getElementById('guided-prev');
+    const nextBtn = document.getElementById('guided-next');
+    const exitBtn = document.getElementById('guided-exit');
+
+    // Initialize from stored mode
+    const currentMode = getMode();
+    pills.forEach(p => p.classList.toggle('active', p.dataset.mode === currentMode));
+    applyMode(currentMode);
+
+    // Mode switching
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const mode = pill.dataset.mode;
+        pills.forEach(p => p.classList.toggle('active', p === pill));
+        setMode(mode);
+        applyMode(mode);
+      });
+    });
+    function applyMode(mode) {
+      // Toggle body class for CSS-driven visibility
+      document.body.dataset.navMode = mode;
+      guidedControls.style.display = mode === 'guided' ? 'flex' : 'none';
+      guidedPicker.style.display = 'none';
+
+      if (mode === 'guided') {
+        const path = getGuidedPath();
+        if (path && path.length > 0) {
+          updateGuidedDisplay();
+        } else {
+          // Show path picker
+          guidedPicker.style.display = 'block';
+        }
+      }
+    }
+
+    function updateGuidedDisplay() {
+      const path = getGuidedPath();
+      if (!path) return;
+      const idx = getGuidedIndex();
+      const current = path[idx];
+      if (current) {
+        guidedInfo.textContent = `${idx + 1}/${path.length}: ${current.title || current.id}`;
+        guidedInfo.title = current.reason || '';
+      }
+    }
+
+    // Path option clicks
+    document.querySelectorAll('.path-option').forEach(opt => {
+      opt.addEventListener('click', async () => {
+        const pathType = opt.dataset.path;
+        guidedPicker.style.display = 'none';
+
+        // Load graph for path generation
+        let graph;
+        try {
+          const res = await fetch('/data/dsd/graph.json');
+          graph = await res.json();
+        } catch {
+          // Fallback: try inline data
+          guidedInfo.textContent = 'could not load graph';
+          return;
+        }
+        const currentSlug = window.location.pathname.split('/').filter(Boolean).pop() || '';
+        let path;
+
+        if (pathType === 'random') {
+          path = generateRandomWalk(graph, currentSlug, 12);
+        } else if (pathType === 'chronological') {
+          // Sort all writing nodes by date
+          path = graph.nodes
+            .filter(n => n.type === 'writing' && n.url && n.semantic?.temporalAnchor)
+            .sort((a, b) => (a.semantic.temporalAnchor || '').localeCompare(b.semantic.temporalAnchor || ''))
+            .slice(0, 20)
+            .map(n => ({ id: n.id, title: n.title, url: n.url, reason: n.semantic.temporalAnchor }));
+        } else if (pathType === 'deep-cuts') {
+          // Nodes with fewest connections — the orphans and loners
+          const edgeCounts = {};
+          for (const e of graph.edges) {
+            edgeCounts[e.source] = (edgeCounts[e.source] || 0) + 1;
+            edgeCounts[e.target] = (edgeCounts[e.target] || 0) + 1;
+          }
+          path = graph.nodes
+            .filter(n => n.url)
+            .sort((a, b) => (edgeCounts[a.id] || 0) - (edgeCounts[b.id] || 0))
+            .slice(0, 15)
+            .map(n => ({ id: n.id, title: n.title, url: n.url, reason: `${edgeCounts[n.id] || 0} connections` }));
+        } else if (pathType === 'thematic') {
+          // Follow strongest semantic-echo edges from current node
+          const echoes = graph.edges
+            .filter(e => e.type === 'semantic-echo' && (e.source === currentSlug || e.target === currentSlug))
+            .sort((a, b) => (b.weight || 0) - (a.weight || 0));
+          const nodeMap = {};
+          for (const n of graph.nodes) nodeMap[n.id] = n;
+          path = echoes
+            .map(e => {
+              const id = e.source === currentSlug ? e.target : e.source;
+              const n = nodeMap[id];
+              return n && n.url ? { id, title: n.title, url: n.url, reason: e.context || 'thematic echo' } : null;
+            })
+            .filter(Boolean)
+            .slice(0, 12);
+        }
+
+        if (path && path.length > 0) {
+          setGuidedPath(path);
+          updateGuidedDisplay();
+          guidedControls.style.display = 'flex';
+        } else {
+          guidedInfo.textContent = 'no path found from here';
+          guidedControls.style.display = 'flex';
+        }
+      });
+    });
+    // Guided navigation buttons
+    nextBtn?.addEventListener('click', () => {
+      const next = advanceGuided();
+      if (next?.url) window.location.href = next.url;
+      updateGuidedDisplay();
+    });
+    prevBtn?.addEventListener('click', () => {
+      const prev = retreatGuided();
+      if (prev?.url) window.location.href = prev.url;
+      updateGuidedDisplay();
+    });
+    exitBtn?.addEventListener('click', () => {
+      clearGuidedPath();
+      setMode('explore');
+      pills.forEach(p => p.classList.toggle('active', p.dataset.mode === 'explore'));
+      applyMode('explore');
+    });
+  })();
+</script>

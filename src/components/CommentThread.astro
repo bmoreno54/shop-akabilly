@@ -1,0 +1,446 @@
+---
+/**
+ * CommentThread — rich commenting for any DSD node
+ *
+ * Supports:
+ * - Line-anchored comments (tied to specific lines via #L5 fragments)
+ * - Reaction types beyond text: annotations, questions, connections
+ * - Quote-and-respond (select text, comment on it)
+ * - Threaded replies
+ * - Session-local storage (no backend yet — comments persist in
+ *   sessionStorage and can be exported/submitted to the desktop editor)
+ *
+ * Comments are first-class DSD material: each comment can become
+ * a node with edges to the piece it responds to. This is how the
+ * graph grows from user engagement.
+ */
+
+interface Props {
+  nodeId: string;
+  nodeTitle: string;
+  /** If true, show line-anchored comment affordances */
+  lineAddressable?: boolean;
+}
+
+const { nodeId, nodeTitle, lineAddressable = false } = Astro.props;
+---
+
+<section class="comment-thread" id="comment-thread" data-node-id={nodeId}>
+  <div class="comment-header">
+    <h3 class="comment-heading">respond</h3>
+    <span class="comment-count" id="comment-count"></span>
+  </div>
+  <!-- Comment type selector -->
+  <div class="comment-types">
+    <button class="type-btn active" data-type="comment" title="General comment">
+      <span class="type-icon">&#9998;</span> comment
+    </button>
+    <button class="type-btn" data-type="annotation" title="Annotate a specific part">
+      <span class="type-icon">&#128278;</span> annotate
+    </button>
+    <button class="type-btn" data-type="question" title="Ask about this piece">
+      <span class="type-icon">?</span> question
+    </button>
+    <button class="type-btn" data-type="connection" title="Suggest a connection to another work">
+      <span class="type-icon">&#8644;</span> connection
+    </button>
+  </div>
+
+  <!-- Quote context (shown when commenting on selected text) -->
+  <div class="quote-context" id="quote-context" style="display:none;">
+    <span class="quote-label">responding to:</span>
+    <blockquote class="quote-text" id="quote-text"></blockquote>
+    <button class="quote-clear" id="quote-clear">&#10005;</button>
+  </div>
+
+  <!-- Comment input -->
+  <div class="comment-input-area">
+    <textarea class="comment-input" id="comment-input"
+      placeholder="what does this make you think of?"
+      rows="2"></textarea>
+    <div class="comment-meta-row">
+      <input type="text" class="comment-name" id="comment-name"
+        placeholder="your name (optional)" />
+      <button class="comment-submit" id="comment-submit">post</button>
+    </div>
+  </div>
+
+  <!-- Existing comments -->
+  <div class="comments-list" id="comments-list"></div>
+</section>
+<style>
+  .comment-thread {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  :global([data-nav-mode="quiet"]) .comment-thread { display: none; }
+  .comment-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .comment-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+  }
+  .comment-count {
+    font-size: 0.625rem;
+    color: var(--color-accent);
+  }
+  /* Type selector */
+  .comment-types {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .type-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .type-btn:hover { border-color: var(--color-accent); color: var(--color-text); }
+  .type-btn.active {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: rgba(212, 168, 83, 0.08);
+  }
+  .type-icon { font-size: 0.75rem; }  /* Quote context */
+  .quote-context {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(212, 168, 83, 0.06);
+    border-left: 2px solid var(--color-accent);
+    border-radius: 0 0.25rem 0.25rem 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+  }
+  .quote-label {
+    font-size: 0.5625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    font-weight: 600;
+    white-space: nowrap;
+    padding-top: 0.1rem;
+  }
+  .quote-text {
+    flex: 1;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .quote-clear {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0;
+  }
+  /* Input area */
+  .comment-input-area { margin-bottom: 1rem; }
+  .comment-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .comment-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  .comment-meta-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.375rem;
+  }
+  .comment-name {
+    flex: 1;
+    padding: 0.35rem 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    color: var(--color-text);
+    font-size: 0.75rem;
+  }
+  .comment-submit {
+    padding: 0.35rem 0.75rem;
+    background: var(--color-accent);
+    border: none;
+    border-radius: 0.25rem;
+    color: #0a0a0a;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }  /* Comments list */
+  .comments-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .comment-card {
+    padding: 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+  .comment-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.375rem;
+  }
+  .comment-author {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .comment-type-badge {
+    font-size: 0.5625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .comment-time {
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+    margin-left: auto;
+  }
+  .comment-quote-ref {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: 0.25rem 0.5rem;
+    border-left: 2px solid var(--color-border);
+    margin-bottom: 0.375rem;
+  }
+  .comment-body {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+  .comment-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.375rem;
+  }
+  .comment-action {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    cursor: pointer;
+    padding: 0;
+  }
+  .comment-action:hover { color: var(--color-accent); }
+  .no-comments {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+  }
+</style>
+<script>
+  (() => {
+    const thread = document.getElementById('comment-thread');
+    if (!thread) return;
+    const nodeId = thread.dataset.nodeId;
+    const STORE_KEY = `akb-comments-${nodeId}`;
+
+    const input = document.getElementById('comment-input');
+    const nameInput = document.getElementById('comment-name');
+    const submitBtn = document.getElementById('comment-submit');
+    const list = document.getElementById('comments-list');
+    const countEl = document.getElementById('comment-count');
+    const quoteCtx = document.getElementById('quote-context');
+    const quoteText = document.getElementById('quote-text');
+    const quoteClear = document.getElementById('quote-clear');
+
+    let currentType = 'comment';
+    let currentQuote = null;
+    let currentLineRef = null;
+
+    // Type selector
+    document.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentType = btn.dataset.type;
+        // Update placeholder based on type
+        const placeholders = {
+          comment: 'what does this make you think of?',
+          annotation: 'add context or interpretation...',
+          question: 'what are you curious about?',
+          connection: 'what does this remind you of? (paste a URL or describe it)',
+        };
+        input.placeholder = placeholders[currentType] || placeholders.comment;
+      });
+    });
+    // Text selection → quote context
+    document.addEventListener('mouseup', () => {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed) return;
+      const text = sel.toString().trim();
+      if (text.length < 3 || text.length > 500) return;
+      // Check if selection is within the writing body
+      const writingBody = document.getElementById('writing-body');
+      if (!writingBody) return;
+      const anchor = sel.anchorNode;
+      if (!writingBody.contains(anchor)) return;
+
+      currentQuote = text;
+      // Find line reference if available
+      const lineEl = anchor.parentElement?.closest('.writing-line');
+      currentLineRef = lineEl ? lineEl.dataset.line : null;
+
+      quoteText.textContent = text.length > 120 ? text.slice(0, 120) + '...' : text;
+      quoteCtx.style.display = 'flex';
+      input.focus();
+    });
+
+    quoteClear?.addEventListener('click', () => {
+      currentQuote = null;
+      currentLineRef = null;
+      quoteCtx.style.display = 'none';
+    });
+
+    // Load comments
+    function loadComments() {
+      try {
+        return JSON.parse(sessionStorage.getItem(STORE_KEY) || '[]');
+      } catch { return []; }
+    }
+
+    function saveComments(comments) {
+      sessionStorage.setItem(STORE_KEY, JSON.stringify(comments));
+    }
+    function renderComments() {
+      const comments = loadComments();
+      countEl.textContent = comments.length > 0 ? `${comments.length}` : '';
+
+      if (comments.length === 0) {
+        list.innerHTML = '<p class="no-comments">no responses yet — be the first</p>';
+        return;
+      }
+
+      list.innerHTML = comments.map((c, i) => `
+        <div class="comment-card" data-idx="${i}">
+          <div class="comment-card-header">
+            <span class="comment-author">${esc(c.author || 'anonymous')}</span>
+            <span class="comment-type-badge">${esc(c.type)}</span>
+            <span class="comment-time">${timeAgo(c.ts)}</span>
+          </div>
+          ${c.quote ? `<div class="comment-quote-ref">${esc(c.quote)}</div>` : ''}
+          <div class="comment-body">${esc(c.body)}</div>
+          <div class="comment-actions">
+            <button class="comment-action" data-action="reply" data-idx="${i}">reply</button>
+            ${c.lineRef ? `<button class="comment-action" data-action="goto" data-line="${c.lineRef}">line ${c.lineRef}</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      // Wire up actions
+      list.querySelectorAll('[data-action="goto"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const line = btn.dataset.line;
+          const el = document.getElementById('L' + line);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('quoted');
+            setTimeout(() => el.classList.remove('quoted'), 2000);
+          }
+        });
+      });
+
+      list.querySelectorAll('[data-action="reply"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          const c = comments[idx];
+          if (c) {
+            currentQuote = c.body.slice(0, 80);
+            quoteText.textContent = currentQuote;
+            quoteCtx.style.display = 'flex';
+            input.focus();
+          }
+        });
+      });
+    }
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    function timeAgo(ts) {
+      const diff = Date.now() - ts;
+      if (diff < 60000) return 'just now';
+      if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+      return new Date(ts).toLocaleDateString();
+    }
+
+    // Submit
+    submitBtn?.addEventListener('click', () => {
+      const body = input.value.trim();
+      if (!body) return;
+
+      const comments = loadComments();
+      comments.push({
+        type: currentType,
+        body,
+        author: nameInput.value.trim() || null,
+        quote: currentQuote,
+        lineRef: currentLineRef,
+        ts: Date.now(),
+        nodeId,
+      });
+      saveComments(comments);
+
+      // Clear form
+      input.value = '';
+      currentQuote = null;
+      currentLineRef = null;
+      quoteCtx.style.display = 'none';
+
+      renderComments();
+
+      // Dispatch event for potential DSD integration
+      window.dispatchEvent(new CustomEvent('akb-comment', {
+        detail: { nodeId, type: currentType, body }
+      }));
+    });
+
+    // Keyboard shortcut: Ctrl/Cmd+Enter to submit
+    input?.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        submitBtn?.click();
+      }
+    });
+
+    // Initial render
+    renderComments();
+  })();
+</script>

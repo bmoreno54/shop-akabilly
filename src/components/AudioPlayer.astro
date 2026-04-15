@@ -62,6 +62,9 @@ const { src, title, externalUrl, externalPlatform } = Astro.props;
     const volSlider = player.querySelector('.vol-slider');
     const volBtn = player.querySelector('.vol-btn');
 
+    // Expose WaveSurfer instance for remix tools
+    player._wavesurfer = null;
+
     const ws = WaveSurfer.create({
       container: waveEl,
       url: src,
@@ -85,6 +88,7 @@ const { src, title, externalUrl, externalPlatform } = Astro.props;
     ws.on('ready', () => {
       durationEl.textContent = fmt(ws.getDuration());
       ws.setVolume(parseFloat(volSlider.value));
+      player._wavesurfer = ws;
     });
 
     ws.on('audioprocess', () => {

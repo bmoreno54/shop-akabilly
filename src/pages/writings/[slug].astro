@@ -1,7 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AudioPlayer from '../../components/AudioPlayer.astro';
+import RemixSurface from '../../components/RemixSurface.astro';
 import DSDConnections from '../../components/DSDConnections.astro';
+import CommentThread from '../../components/CommentThread.astro';
+import NavigationMode from '../../components/NavigationMode.astro';
 import SiteNav from '../../components/SiteNav.astro';
 
 const writingModules = import.meta.glob('../../data/writings/*.json', { eager: true });
@@ -37,6 +40,13 @@ const typeLabels: Record<string, string> = {
     {writing.audioSrc && (
       <div class="writing-player">
         <AudioPlayer src={writing.audioSrc} title={writing.title} />
+        <RemixSurface
+          slug={writing.slug}
+          title={writing.title}
+          audioSrc={writing.audioSrc}
+          remixes={remixes}
+          allowFork={true}
+        />
       </div>
     )}
 
@@ -62,6 +72,8 @@ const typeLabels: Record<string, string> = {
       ))}
     </div>
 
+    <CommentThread nodeId={writing.slug} nodeTitle={writing.title} lineAddressable={true} />
+
     <footer class="writing-footer">
       <div class="provenance">
         <p class="author-lock">Original text by {writing.artist}. All rights reserved.</p>
@@ -73,7 +85,7 @@ const typeLabels: Record<string, string> = {
   <SiteNav showScrollNav={false}>
     <Fragment slot="panel-left">
       <h3 class="panel-heading">connections</h3>
-      <DSDConnections nodeId={writing.slug} limit={12} />
+      <DSDConnections nodeId={writing.slug} limit={12} tags={writing.tags || []} nodeType="writing" />
     </Fragment>
     <Fragment slot="panel-right">
       <h3 class="panel-heading">about this piece</h3>

@@ -1,43 +1,43 @@
 ---
 /**
- * deaconstruckdead surface component
+ * deaconstruckdead surface component v2
  * 
- * Renders emergent connections for a given node.
- * Reads the DSD graph, finds all edges touching this node,
- * resolves the connected nodes, and surfaces them weighted by
- * connection strength. Designed to be dropped into any page.
- * 
- * As the graph grows (user activity, AI shadow work, new catalog
- * entries), the connections this component surfaces will shift
- * without any page-level changes. The page just says "I am this
- * node" and DSD handles the rest.
+ * Session-aware, mode-aware connection surfacing.
+ *
+ * Server side: Renders ALL candidate connections as hidden data.
+ * Client side: The session trail engine re-ranks and filters
+ * connections based on the user's current journey, then the
+ * navigation mode controls visibility.
+ *
+ * quiet mode  → component hidden entirely
+ * explore mode → session-weighted connections visible
+ * guided mode → only "next in path" shown, rest collapsed
  */
 
 interface Props {
   nodeId: string;
   limit?: number;
   heading?: string;
+  /** Pass node tags for session trail recording */
+  tags?: string[];
+  nodeType?: string;
 }
 
-const { nodeId, limit = 6, heading = 'Connected' } = Astro.props;
+const { nodeId, limit = 12, heading = 'Connected', tags = [], nodeType = 'unknown' } = Astro.props;
 
 import graph from '../data/dsd/graph.json';
 
 // Find all edges where this node is source or target
-const edges = graph.edges
-  .filter(e => e.source === nodeId || e.target === nodeId)
-  .sort((a, b) => b.weight - a.weight)
+const edges = (graph as any).edges
+  .filter((e: any) => e.source === nodeId || e.target === nodeId)
+  .sort((a: any, b: any) => (b.weight || 0) - (a.weight || 0))
   .slice(0, limit);
+// Resolve connected nodes
+const nodeMap: Record<string, any> = {};
+for (const n of (graph as any).nodes) nodeMap[n.id] = n;
 
-// Resolve connected node IDs
-const connectedIds = edges.map(e =>
-  e.source === nodeId ? e.target : e.source
-);
-
-// Build display items: node info + edge context
-const nodeMap = Object.fromEntries(graph.nodes.map(n => [n.id, n]));
 const connections = edges
-  .map(e => {
+  .map((e: any) => {
     const otherId = e.source === nodeId ? e.target : e.source;
     const node = nodeMap[otherId];
     if (!node) return null;
@@ -50,56 +50,87 @@ const edgeTypeLabels: Record<string, string> = {
   'cover-art-for': 'cover art',
   'remix-of': 'remix',
   'stem-of': 'stem',
-  'forked-from': 'forked',
+  'forked-from': 'variant',
   'lyrics-for': 'lyrics',
   'temporal-proximity': 'same era',
-  'semantic-echo': 'echo',
+  'semantic-echo': 'resonance',
   'shared-theme': 'shared thread',
-  'user-path': 'frequently visited together',
+  'user-path': 'trail',
   'ai-discovered': 'discovered',
   'collection-sibling': 'same collection',
+  'part-of': 'part of',
+  'quotes': 'quotes',
+  'echoes-in': 'echoed in',
+  'responds-to': 'responds to',
+  'continues-from': 'continues',
+  'contrasts-with': 'contrast',
 };
+
+// Serialize connection data for client-side re-ranking
+const connectionsJSON = JSON.stringify(connections.map(({ node, edge }: any) => ({
+  id: node.id,
+  title: node.title,
+  url: node.url,
+  type: node.type,
+  tags: node.semantic?.tags || [],
+  edgeType: edge.type,
+  edgeWeight: edge.weight || 0.5,
+  context: edge.context || '',
+  thumbnail: node.surface?.thumbnail || null,
+})));
 ---
-
-{connections.length > 0 && (
-  <nav class="dsd-connections" aria-label="Connected works">
+<nav class="dsd-connections" id="dsd-connections"
+     data-node-id={nodeId}
+     data-node-tags={JSON.stringify(tags)}
+     data-node-type={nodeType}
+     data-connections={connectionsJSON}
+     aria-label="Connected works">
+  <div class="dsd-header">
     <h3 class="dsd-heading">{heading}</h3>
-    <ul class="dsd-list">
-      {connections.map(({ node, edge }) => (
-        <li class="dsd-item" data-edge-type={edge.type} data-weight={edge.weight}>
-          {node.url ? (
-            <a href={node.url} class="dsd-link">
-              {node.surface.thumbnail && (
-                <img src={node.surface.thumbnail} alt="" class="dsd-thumb" loading="lazy" />
-              )}
-              <div class="dsd-info">
-                <span class="dsd-node-title">{node.title}</span>
-                <span class="dsd-edge-label">{edgeTypeLabels[edge.type] || edge.type}</span>
-                {edge.context && <span class="dsd-context">{edge.context}</span>}
-              </div>
-            </a>
-          ) : (
-            <div class="dsd-link dsd-no-url">
-              {node.surface.thumbnail && (
-                <img src={node.surface.thumbnail} alt="" class="dsd-thumb" loading="lazy" />
-              )}
-              <div class="dsd-info">
-                <span class="dsd-node-title">{node.title}</span>
-                <span class="dsd-edge-label">{edgeTypeLabels[edge.type] || edge.type}</span>
-              </div>
+    <span class="dsd-session-hint" id="dsd-session-hint"></span>
+  </div>
+  <ul class="dsd-list" id="dsd-list">
+    {connections.map(({ node, edge }: any) => (
+      <li class="dsd-item"
+          data-node-id={node.id}
+          data-edge-type={edge.type}
+          data-weight={edge.weight}>
+        {node.url ? (
+          <a href={node.url} class="dsd-link">
+            {node.surface?.thumbnail && (
+              <img src={node.surface.thumbnail} alt="" class="dsd-thumb" loading="lazy" />
+            )}
+            <div class="dsd-info">
+              <span class="dsd-node-title">{node.title}</span>
+              <span class="dsd-edge-label">{edgeTypeLabels[edge.type] || edge.type}</span>
+              {edge.context && <span class="dsd-context">{edge.context}</span>}
             </div>
-          )}
-        </li>
-      ))}
-    </ul>
-  </nav>
-)}
-
+            <span class="dsd-trail-badge" style="display:none;" title="You've been here">&#10003;</span>
+          </a>
+        ) : (
+          <div class="dsd-link dsd-no-url">
+            <div class="dsd-info">
+              <span class="dsd-node-title">{node.title}</span>
+              <span class="dsd-edge-label">{edgeTypeLabels[edge.type] || edge.type}</span>
+            </div>
+          </div>
+        )}
+      </li>
+    ))}
+  </ul>
+</nav>
 <style>
   .dsd-connections {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
+    margin-top: 0;
+    padding: 0;
+  }
+  /* Mode-aware visibility */
+  :global([data-nav-mode="quiet"]) .dsd-connections { display: none; }
+  .dsd-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
   }
   .dsd-heading {
     font-size: 0.75rem;
@@ -107,41 +138,51 @@ const edgeTypeLabels: Record<string, string> = {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-text-muted);
-    margin-bottom: 1rem;
+  }
+  .dsd-session-hint {
+    font-size: 0.625rem;
+    color: var(--color-accent);
+    opacity: 0.7;
   }
   .dsd-list {
     list-style: none;
     padding: 0;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   .dsd-item {
-    flex: 1 1 14rem;
-    max-width: 20rem;
+    transition: opacity 0.3s, transform 0.3s;
   }
-  .dsd-link {
+  .dsd-item.trail-boosted {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 0.25rem;
+  }
+  .dsd-item.trail-faded {
+    opacity: 0.45;
+  }  .dsd-link {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem;
+    padding: 0.6rem 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     text-decoration: none;
     color: inherit;
     transition: border-color 0.2s, background 0.2s;
+    position: relative;
   }
   a.dsd-link:hover {
     border-color: var(--color-accent);
     background: var(--color-surface);
   }
   .dsd-no-url {
-    opacity: 0.65;
+    opacity: 0.5;
     cursor: default;
   }
   .dsd-thumb {
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: calc(var(--radius) * 0.5);
     object-fit: cover;
     flex-shrink: 0;
@@ -149,23 +190,108 @@ const edgeTypeLabels: Record<string, string> = {
   .dsd-info {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.1rem;
     min-width: 0;
+    flex: 1;
   }
   .dsd-node-title {
     font-weight: 500;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .dsd-edge-label {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--color-accent);
     font-weight: 600;
   }
   .dsd-context {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     color: var(--color-text-muted);
-    line-height: 1.4;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dsd-trail-badge {
+    font-size: 0.625rem;
+    color: var(--color-accent);
+    opacity: 0.6;
+    flex-shrink: 0;
   }
 </style>
+<script>
+  import { visit, score, getVisitedIds, getMode, getTrail } from '../scripts/session-trail.js';
+
+  (() => {
+    const container = document.getElementById('dsd-connections');
+    if (!container) return;
+
+    const nodeId = container.dataset.nodeId;
+    const tags = JSON.parse(container.dataset.nodeTags || '[]');
+    const nodeType = container.dataset.nodeType || 'unknown';
+    const connections = JSON.parse(container.dataset.connections || '[]');
+
+    // Record this page visit in the session trail
+    visit(nodeId, tags, nodeType);
+
+    // Session-aware re-ranking
+    const visited = getVisitedIds();
+    const trail = getTrail();
+    const hint = document.getElementById('dsd-session-hint');
+
+    if (trail.length > 1 && hint) {
+      hint.textContent = `${trail.length} stops on your trail`;
+    }
+
+    // Score each connection and reorder
+    const scored = connections.map(c => ({
+      ...c,
+      score: score(c.id, c.tags, c.type, c.edgeWeight),
+      visited: visited.has(c.id),
+    })).sort((a, b) => b.score - a.score);
+    // Reorder DOM to match session-weighted scores
+    const list = document.getElementById('dsd-list');
+    if (list) {
+      const items = Array.from(list.querySelectorAll('.dsd-item'));
+      const itemMap = {};
+      for (const item of items) {
+        itemMap[item.dataset.nodeId] = item;
+      }
+
+      // Reorder and annotate
+      for (const c of scored) {
+        const item = itemMap[c.id];
+        if (!item) continue;
+
+        // Move to end (builds order top-to-bottom by score)
+        list.appendChild(item);
+
+        // Mark visited nodes
+        if (c.visited) {
+          const badge = item.querySelector('.dsd-trail-badge');
+          if (badge) badge.style.display = 'inline';
+        }
+
+        // Boost items that align with session momentum
+        if (c.score > 0.6) {
+          item.classList.add('trail-boosted');
+        } else if (c.score < 0.25 && trail.length > 3) {
+          item.classList.add('trail-faded');
+        }
+      }
+    }
+
+    // React to mode changes
+    window.addEventListener('akb-mode-change', (e) => {
+      const mode = e.detail?.mode;
+      document.body.dataset.navMode = mode;
+    });
+
+    // Set initial mode
+    document.body.dataset.navMode = getMode();
+  })();
+</script>

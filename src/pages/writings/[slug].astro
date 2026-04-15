@@ -1,0 +1,117 @@
+---
+import Base from '../../layouts/Base.astro';
+import AudioPlayer from '../../components/AudioPlayer.astro';
+
+const writingModules = import.meta.glob('../../data/writings/*.json', { eager: true });
+const allWritings = Object.values(writingModules).map((m: any) => m.default);
+
+export function getStaticPaths() {
+  const modules = import.meta.glob('../../data/writings/*.json', { eager: true });
+  const writings = Object.values(modules).map((m: any) => m.default);
+  return writings.map(w => ({ params: { slug: w.slug }, props: { writing: w } }));
+}
+
+const { writing } = Astro.props;
+const lines = writing.body.split('\n');
+
+const typeLabels: Record<string, string> = {
+  lyrics: 'Lyrics',
+  essay: 'Essay',
+  note: 'Note',
+  fragment: 'Fragment',
+};
+---
+
+<Base title={`${writing.title} — ${typeLabels[writing.type] || writing.type}`} description={writing.description}>
+  <article class="writing-detail container">
+    <header class="writing-header">
+      <span class="writing-type-badge">{typeLabels[writing.type] || writing.type}</span>
+      <h1 class="writing-title">{writing.title}</h1>
+      <p class="writing-meta">{writing.artist} · {writing.year}</p>
+    </header>
+
+    {writing.audioSrc && (
+      <div class="writing-player">
+        <AudioPlayer src={writing.audioSrc} title={writing.title} />
+      </div>
+    )}
+
+    <div class="writing-body">
+      {lines.map((line: string) => (
+        line.trim() === '' ? <br /> : <p class="writing-line">{line}</p>
+      ))}
+    </div>
+
+    <footer class="writing-footer">
+      <div class="provenance">
+        <p class="author-lock">Original text by {writing.artist}. All rights reserved.</p>
+        <p class="remix-note">Fork it, remix it, annotate it, quote it — just don't edit the source.</p>
+      </div>
+      {writing.pairedWith && (
+        <a href={writing.pairedWith.url} class="paired-link">
+          See paired work: {writing.pairedWith.title} →
+        </a>
+      )}
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .writing-detail {
+    padding: 3rem 1.5rem;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+  .writing-header { margin-bottom: 2rem; }
+  .writing-type-badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
+  .writing-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.25rem 0 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .writing-meta {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .writing-player { margin-bottom: 2rem; }
+  .writing-body {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+  .writing-line {
+    margin: 0;
+    padding: 0.1rem 0;
+  }
+  .writing-footer {
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.5rem;
+  }
+  .author-lock {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+  }
+  .remix-note {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin-bottom: 1rem;
+  }
+  .paired-link {
+    display: inline-block;
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .paired-link:hover { opacity: 0.8; }
+</style>

@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import writings from '../../data/writings.json';
+
+const typeLabels: Record<string, string> = {
+  lyrics: 'Lyrics',
+  essay: 'Essay',
+  note: 'Note',
+  fragment: 'Fragment',
+};
+---
+
+<Base title="Writings" description="Lyrics, essays, and other writings by akabilly">
+  <section class="writings-page container">
+    <h1 class="page-title">Writings</h1>
+    <p class="page-intro">Lyrics, essays, notes, and fragments from the akabilly catalog.</p>
+
+    <ul class="writings-list">
+      {writings.map(w => (
+        <li class="writing-item">
+          <a href={`/writings/${w.slug}`}>
+            <span class="writing-type">{typeLabels[w.type] || w.type}</span>
+            <span class="writing-title">{w.title}</span>
+            <span class="writing-year">{w.year}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .writings-page {
+    padding: 3rem 1.5rem;
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .page-intro {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  .writings-list {
+    list-style: none;
+    padding: 0;
+  }
+  .writing-item a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .writing-item a:hover {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+  .writing-type {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    min-width: 4rem;
+  }
+  .writing-title {
+    flex: 1;
+    font-weight: 500;
+  }
+  .writing-year {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+</style>

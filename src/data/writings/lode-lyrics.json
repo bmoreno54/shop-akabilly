@@ -1,0 +1,22 @@
+{
+  "slug": "lode-lyrics",
+  "title": "Lode",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-03-10",
+  "description": "Lyrics for Lode — the first song in the akabilly catalog. Written March 10, 2022.",
+  "access": {
+    "original": "author-locked",
+    "permitted": ["fork", "remix", "annotate", "critique", "quote", "share"]
+  },
+  "pairedWith": {
+    "catalogId": "lode",
+    "title": "Lode (print)",
+    "url": "/product/lode"
+  },
+  "audioSrc": "/media/audio/lode.mp3",
+  "externalLinks": [],
+  "body": "lobster god\n\ni'm not here to get rich\ni already struck gold\nthis just the ringing that my inner caverns can't hold\nbringing up anything i can from the lode\nwhistle while i work\nwhen i swing i get low\nwhen my legs get tired i sit on the floor\nbanging out shapes\neverything i make glows\nand when i get to the surface i give it to the world\ngive it a whirl\nif you don't like it you can put it down\nthat's where it's from where it wants to be found\nit's funky underground\nand i get lucky cuz i get around\nyou don't need to trust me just listen to the sound\nworth it's weight, pound for pound\nand you can change it, melt it, mold it, make it new\nlove it, hate it, hold it, make it you\nalways wanted to be an idol\ntake it, own it, drape it over you\nlet the empire ogle over you\nit's ok love, you don't need to remember the overview\nthere isn't one and you got shit to do\ni know cuz you're living proof\nand if this gold don't make your load miserable\nyou can have it to serve your magic\nthat's it\nno contract, no habits\nno contacts, no tracking\ni'm good cuz i've had it\ni saw more i'm goin back in\n\ntherapy",
+  "tags": ["lyrics", "lode", "impreschernism"]
+}

@@ -1,0 +1,139 @@
+---
+interface Props {
+  context?: string;
+  heading?: string;
+  subtext?: string;
+  compact?: boolean;
+}
+const {
+  context = 'shop',
+  heading = 'Stay in the loop',
+  subtext = 'New work, releases, and dispatches from the studio.',
+  compact = false,
+} = Astro.props;
+---
+
+<div class:list={['email-signup', { compact }]}>
+  <h2 class="signup-heading">{heading}</h2>
+  {!compact && <p class="signup-subtext">{subtext}</p>}
+  <form class="signup-form" data-context={context}>
+    <input type="email" name="email" placeholder="your@email.com" required />
+    <button type="submit">Subscribe</button>
+  </form>
+  <p class="signup-status" aria-live="polite"></p>
+</div>
+
+<script>
+  const form = document.querySelector('.signup-form') as HTMLFormElement;
+  const status = document.querySelector('.signup-status') as HTMLParagraphElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = new FormData(form).get('email') as string;
+    const context = form.dataset.context || 'unknown';
+    const btn = form.querySelector('button') as HTMLButtonElement;
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    status.textContent = '';
+    status.className = 'signup-status';
+
+    try {
+      // Future: POST to /api/subscribe with { email, context }
+      // For now, store locally and show confirmation
+      const subs = JSON.parse(localStorage.getItem('akabilly-subs') || '[]');
+      subs.push({ email, context, ts: new Date().toISOString() });
+      localStorage.setItem('akabilly-subs', JSON.stringify(subs));
+
+      status.textContent = 'You're in. Welcome.';
+      status.classList.add('success');
+      form.reset();
+    } catch (err) {
+      status.textContent = 'Something went wrong. Try again.';
+      status.classList.add('error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Subscribe';
+    }
+  });
+</script>
+
+<style>
+  .email-signup {
+    padding: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    text-align: center;
+  }
+  .email-signup.compact {
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+  }
+  .email-signup.compact .signup-heading {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+  .email-signup.compact .signup-form {
+    flex: 1;
+  }
+  .signup-heading {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .signup-subtext {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+  .signup-form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 28rem;
+    margin: 0 auto;
+  }
+  .signup-form input[type="email"] {
+    flex: 1;
+    padding: 0.625rem 0.875rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    font-size: 0.875rem;
+  }
+  .signup-form input[type="email"]::placeholder {
+    color: var(--color-text-muted);
+  }
+  .signup-form button {
+    padding: 0.625rem 1.25rem;
+    background: var(--color-accent);
+    color: #0a0a0a;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .signup-form button:hover {
+    background: var(--color-accent-hover);
+  }
+  .signup-form button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .signup-status {
+    font-size: 0.8125rem;
+    margin-top: 0.75rem;
+    min-height: 1.25rem;
+  }
+  .signup-status.success { color: #6ec87a; }
+  .signup-status.error { color: #e06c6c; }
+</style>

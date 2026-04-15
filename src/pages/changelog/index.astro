@@ -1,0 +1,85 @@
+---
+// Changelog — maintained by Claude, provenanced transparently
+// Genre: Communications / Institutional Memory
+// Water Cycle: Circulate — the operation's activity made visible
+import Base from '../../layouts/Base.astro';
+import changelog from '../../data/changelog.json';
+---
+
+<Base title="Changelog" description="What's happening at akabilly.com">
+  <section class="changelog container">
+    <h1>Changelog</h1>
+    <p class="changelog-subtitle">
+      What's being built, shipped, and connected across the akabilly ecosystem.
+      <span class="provenance-note">Maintained by Claude. Directed by akabilly.</span>
+    </p>
+
+    {changelog.map(entry => (
+      <article class="entry">
+        <div class="entry-header">
+          <time class="entry-date">{entry.date}</time>
+          <span class="entry-author">by {entry.author}</span>
+        </div>
+        <h2 class="entry-title">{entry.title}</h2>
+        <ul class="entry-list">
+          {entry.entries.map(item => (
+            <li>{item}</li>
+          ))}
+        </ul>        <p class="entry-provenance">{entry.provenance}</p>
+      </article>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .changelog { padding: 3rem 1.5rem; max-width: 720px; }
+  .changelog h1 {
+    font-size: 2rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .changelog-subtitle {
+    color: var(--color-text-muted);
+    margin-bottom: 2.5rem; line-height: 1.6;
+  }
+  .provenance-note {
+    display: block; font-size: 0.8125rem;
+    margin-top: 0.25rem; font-style: italic;
+  }
+  .entry {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1.5rem; margin-bottom: 2.5rem;
+  }
+  .entry-header {
+    display: flex; gap: 0.75rem; align-items: center;
+    margin-bottom: 0.375rem;
+  }
+  .entry-date {
+    font-size: 0.8125rem; font-weight: 600;
+    color: var(--color-accent);
+  }
+  .entry-author {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+  .entry-title {
+    font-size: 1.25rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .entry-list {
+    list-style: none; padding: 0;
+  }
+  .entry-list li {
+    padding: 0.25rem 0; font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+  .entry-list li::before {
+    content: '→ '; color: var(--color-accent);
+  }
+  .entry-provenance {
+    font-size: 0.75rem; color: var(--color-text-muted);
+    font-style: italic; margin-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.75rem;
+  }
+</style>

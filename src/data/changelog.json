@@ -1,0 +1,19 @@
+[
+  {
+    "date": "2026-04-14",
+    "author": "claude",
+    "title": "shop.akabilly.com goes local",
+    "entries": [
+      "Storefront scaffolded with Astro — homepage, product detail page, dark theme",
+      "Lode cataloged as first product: cover art (4096x4096 print-ready RGB), song (MP3 web version), lyrics found in vault",
+      "Square Web Payments checkout wired with sandbox credentials",
+      "Prodigi print-on-demand integration built — order creation via Cloudflare Worker",
+      "Inline audio player with play/pause, progress bar, waveform (coming soon)",
+      "Media vault established at /media/audio/ — sovereign audio hosting begins",
+      "GitHub repo created: bmoreno54/shop-akabilly",
+      "FFmpeg installed on host for audio pipeline",
+      "Domain transfer from Wix initiated — Cloudflare DNS pending"
+    ],
+    "provenance": "Built by Claude (Opus 4.6), directed by akabilly. All code, infrastructure, and pipeline work by Claude. Architecture, creative direction, and product decisions by Billy Moreno."
+  }
+]

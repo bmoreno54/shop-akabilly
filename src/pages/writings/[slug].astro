@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import AudioPlayer from '../../components/AudioPlayer.astro';
 import DSDConnections from '../../components/DSDConnections.astro';
+import SiteNav from '../../components/SiteNav.astro';
 
 const writingModules = import.meta.glob('../../data/writings/*.json', { eager: true });
 const allWritings = Object.values(writingModules).map((m: any) => m.default);
@@ -61,9 +62,27 @@ const typeLabels: Record<string, string> = {
         <p class="author-lock">Original text by {writing.artist}. All rights reserved.</p>
         <p class="remix-note">Fork it, remix it, annotate it, quote it — just don't edit the source.</p>
       </div>
-      <DSDConnections nodeId={writing.slug} />
     </footer>
   </article>
+
+  <SiteNav showScrollNav={false}>
+    <Fragment slot="panel-left">
+      <h3 class="panel-heading">connections</h3>
+      <DSDConnections nodeId={writing.slug} limit={12} />
+    </Fragment>
+    <Fragment slot="panel-right">
+      <h3 class="panel-heading">about this piece</h3>
+      <dl class="writing-meta-panel">
+        <dt>type</dt>
+        <dd>{typeLabels[writing.type] || writing.type}</dd>
+        <dt>artist</dt>
+        <dd>{writing.artist}</dd>
+        <dt>year</dt>
+        <dd>{writing.year}</dd>
+      </dl>
+      <a href="/writings" class="back-link">all writings</a>
+    </Fragment>
+  </SiteNav>
 </Base>
 
 <style>
@@ -179,6 +198,38 @@ const typeLabels: Record<string, string> = {
   .author-edit-bar .edit-label {
     flex: 1;
   }
+
+  /* panel content styles */
+  .panel-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+  .writing-meta-panel {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .writing-meta-panel dt {
+    color: var(--color-text-muted);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.75rem;
+  }
+  .writing-meta-panel dd {
+    color: var(--color-text);
+    margin-left: 0;
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+  }
+  .back-link:hover { color: var(--color-accent-hover); }
 </style>
 
 <script>

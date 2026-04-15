@@ -1,5 +1,5 @@
 ---
-// AudioPlayer — inline audio player for paired tracks
+// AudioPlayer — waveform audio player using wavesurfer.js
 // Genre: Media / Engagement Surface
 // Water Cycle: Evaporate — the song reaches ears, draws them deeper
 interface Props {
@@ -11,125 +11,239 @@ interface Props {
 const { src, title, externalUrl, externalPlatform } = Astro.props;
 ---
 
-<div class="audio-player">
+<div class="audio-player" data-src={src}>
   <h2 class="section-label">Listen</h2>
   <div class="player-inner">
-    <button class="play-btn" id="play-btn" aria-label="Play">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" id="play-icon">
+    <button class="play-btn" aria-label="Play" data-playing="false">
+      <svg class="icon-play" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
         <polygon points="5,3 17,10 5,17" />
       </svg>
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" id="pause-icon" style="display:none">
+      <svg class="icon-pause" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
         <rect x="4" y="3" width="4" height="14" />
         <rect x="12" y="3" width="4" height="14" />
       </svg>
     </button>
     <div class="player-info">
       <p class="player-title">{title}</p>
-      <div class="progress-bar" id="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
+      <div class="waveform-container">
+        <div class="waveform" id="waveform"></div>
       </div>
       <div class="time-display">
-        <span id="current-time">0:00</span>
-        <span id="duration">0:00</span>
+        <span class="current-time">0:00</span>
+        <span class="duration">0:00</span>
       </div>
+    </div>    <div class="volume-control">
+      <button class="vol-btn" aria-label="Mute">
+        <svg class="icon-vol" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 2L4.5 5.5H2v5h2.5L8 14V2zM10.5 5.5c.8.8 1.25 1.9 1.25 3s-.45 2.2-1.25 3M12.5 3.5c1.4 1.4 2.25 3.35 2.25 5.5s-.85 4.1-2.25 5.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" aria-label="Volume" />
     </div>
-  </div>  {externalUrl && (
+  </div>
+  {externalUrl && (
     <a href={externalUrl} class="external-link" target="_blank" rel="noopener">
       Also on {externalPlatform} &rarr;
     </a>
   )}
-  <audio id="audio-el" src={src} preload="metadata"></audio>
 </div>
 
-<script is:inline>
-  const audio = document.getElementById('audio-el');
-  const playBtn = document.getElementById('play-btn');
-  const playIcon = document.getElementById('play-icon');
-  const pauseIcon = document.getElementById('pause-icon');
-  const progressBar = document.getElementById('progress-bar');
-  const progressFill = document.getElementById('progress-fill');
-  const currentTime = document.getElementById('current-time');
-  const duration = document.getElementById('duration');
+<script>
+  import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js';
 
-  function fmt(s) {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec.toString().padStart(2, '0')}`;
-  }
+  document.querySelectorAll('.audio-player').forEach(player => {
+    const src = player.dataset.src;
+    if (!src) return;
 
-  audio.addEventListener('loadedmetadata', () => {
-    duration.textContent = fmt(audio.duration);
-  });
-  audio.addEventListener('timeupdate', () => {
-    currentTime.textContent = fmt(audio.currentTime);
-    const pct = (audio.currentTime / audio.duration) * 100;
-    progressFill.style.width = pct + '%';
-  });
-  audio.addEventListener('ended', () => {
-    playIcon.style.display = '';
-    pauseIcon.style.display = 'none';
-  });  playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play();
-      playIcon.style.display = 'none';
-      pauseIcon.style.display = '';
-    } else {
-      audio.pause();
-      playIcon.style.display = '';
-      pauseIcon.style.display = 'none';
+    const waveEl = player.querySelector('.waveform');
+    const playBtn = player.querySelector('.play-btn');
+    const currentTimeEl = player.querySelector('.current-time');
+    const durationEl = player.querySelector('.duration');
+    const volSlider = player.querySelector('.vol-slider');
+    const volBtn = player.querySelector('.vol-btn');
+
+    const ws = WaveSurfer.create({
+      container: waveEl,
+      url: src,
+      height: 32,
+      barWidth: 2,
+      barGap: 1,
+      barRadius: 1,
+      waveColor: '#2a2a2a',
+      progressColor: '#d4a853',
+      cursorColor: '#e0b960',
+      cursorWidth: 1,
+      normalize: true,
+      backend: 'WebAudio',
+    });
+    function fmt(s) {
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ':' + sec.toString().padStart(2, '0');
     }
-  });
-  progressBar.addEventListener('click', (e) => {
-    const rect = progressBar.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
-    audio.currentTime = pct * audio.duration;
+
+    ws.on('ready', () => {
+      durationEl.textContent = fmt(ws.getDuration());
+      ws.setVolume(parseFloat(volSlider.value));
+    });
+
+    ws.on('audioprocess', () => {
+      currentTimeEl.textContent = fmt(ws.getCurrentTime());
+    });
+
+    ws.on('seeking', () => {
+      currentTimeEl.textContent = fmt(ws.getCurrentTime());
+    });
+
+    ws.on('play', () => {
+      playBtn.dataset.playing = 'true';
+    });
+
+    ws.on('pause', () => {
+      playBtn.dataset.playing = 'false';
+    });
+
+    ws.on('finish', () => {
+      playBtn.dataset.playing = 'false';
+    });
+
+    playBtn.addEventListener('click', () => {
+      ws.playPause();
+    });
+
+    volSlider.addEventListener('input', () => {
+      ws.setVolume(parseFloat(volSlider.value));
+    });
+
+    let lastVol = 0.8;
+    volBtn.addEventListener('click', () => {
+      if (ws.getVolume() > 0) {
+        lastVol = ws.getVolume();
+        ws.setVolume(0);
+        volSlider.value = 0;
+      } else {
+        ws.setVolume(lastVol);
+        volSlider.value = lastVol;
+      }
+    });
   });
 </script>
-
 <style>
   .audio-player {
     padding-top: 1.5rem;
     border-top: 1px solid var(--color-border);
   }
   .section-label {
-    font-size: 0.75rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--color-text-muted); margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
   }
   .player-inner {
-    display: flex; align-items: center; gap: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     padding: 0.75rem 1rem;
-  }  .play-btn {
-    background: none; border: none; color: var(--color-accent);
-    cursor: pointer; padding: 0.25rem;
-    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+    width: 36px;
+    height: 36px;
   }
   .play-btn:hover { color: var(--color-accent-hover); }
-  .player-info { flex: 1; min-width: 0; }
+  .play-btn .icon-pause { display: none; }
+  .play-btn[data-playing="true"] .icon-play { display: none; }
+  .play-btn[data-playing="true"] .icon-pause { display: block; }
+  .player-info {
+    flex: 1;
+    min-width: 0;
+  }
   .player-title {
-    font-weight: 600; font-size: 0.875rem;
+    font-weight: 600;
+    font-size: 0.875rem;
     margin-bottom: 0.375rem;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .progress-bar {
-    height: 4px; background: var(--color-border);
-    border-radius: 2px; cursor: pointer; position: relative;
+  .waveform-container {
+    position: relative;
+    cursor: pointer;
+    border-radius: 2px;
+    overflow: hidden;
   }
-  .progress-fill {
-    height: 100%; background: var(--color-accent);
-    border-radius: 2px; width: 0; transition: width 0.1s;
+  .waveform {
+    min-height: 32px;
   }
   .time-display {
-    display: flex; justify-content: space-between;
-    font-size: 0.6875rem; color: var(--color-text-muted);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
     margin-top: 0.25rem;
   }
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
+  }
+  .vol-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0.125rem;
+    display: flex;
+  }
+  .vol-btn:hover { color: var(--color-text); }
+  .vol-slider {
+    width: 60px;
+    height: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--color-border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  .vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    cursor: pointer;
+  }
+  .vol-slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    cursor: pointer;
+    border: none;
+  }
   .external-link {
-    display: block; margin-top: 0.75rem;
-    font-size: 0.8125rem; font-weight: 500;
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 480px) {
+    .volume-control { display: none; }
   }
 </style>

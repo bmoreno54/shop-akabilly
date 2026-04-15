@@ -45,7 +45,7 @@ const {
       subs.push({ email, context, ts: new Date().toISOString() });
       localStorage.setItem('akabilly-subs', JSON.stringify(subs));
 
-      status.textContent = 'You're in. Welcome.';
+      status.textContent = "You're in. Welcome.";
       status.classList.add('success');
       form.reset();
     } catch (err) {

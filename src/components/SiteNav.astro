@@ -1,0 +1,337 @@
+---
+/**
+ * SiteNav — smart scroll navigation + frozen/expandable side panels
+ * 
+ * Provides:
+ * - Scroll-to-top / scroll-to-bottom buttons (contextual visibility)
+ * - Four expandable panels (top, right, bottom, left) activated by slots
+ * - Panels freeze to viewport edges and toggle open/closed
+ * - Keyboard accessible (Escape to close, Tab to navigate)
+ * 
+ * Usage in any page:
+ *   <SiteNav>
+ *     <Fragment slot="panel-left">...DSD connections...</Fragment>
+ *     <Fragment slot="panel-right">...TOC or metadata...</Fragment>
+ *     <Fragment slot="panel-bottom">...audio player...</Fragment>
+ *   </SiteNav>
+ */
+interface Props {
+  showScrollNav?: boolean;
+}
+const { showScrollNav = true } = Astro.props;
+const hasLeft = Astro.slots.has('panel-left');
+const hasRight = Astro.slots.has('panel-right');
+const hasBottom = Astro.slots.has('panel-bottom');
+const hasTop = Astro.slots.has('panel-top');
+---
+
+<!-- scroll nav buttons -->
+{showScrollNav && (
+  <div class="scroll-nav" id="scroll-nav">
+    <button class="scroll-btn scroll-top" id="scroll-top" aria-label="Scroll to top" title="Top">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3L3 8.5h3.25V13h3.5V8.5H13L8 3z" fill="currentColor"/></svg>
+    </button>
+    <button class="scroll-btn scroll-bottom" id="scroll-bottom" aria-label="Scroll to bottom" title="Bottom">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13L13 7.5H9.75V3h-3.5v4.5H3L8 13z" fill="currentColor"/></svg>
+    </button>
+  </div>
+)}
+
+<!-- side panels -->
+{hasLeft && (
+  <aside class="side-panel panel-left" id="panel-left" data-panel="left" aria-label="Left panel">
+    <button class="panel-toggle" data-target="panel-left" aria-expanded="false" aria-label="Toggle left panel">
+      <svg class="toggle-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="panel-content">
+      <slot name="panel-left" />
+    </div>
+  </aside>
+)}
+
+{hasRight && (
+  <aside class="side-panel panel-right" id="panel-right" data-panel="right" aria-label="Right panel">
+    <button class="panel-toggle" data-target="panel-right" aria-expanded="false" aria-label="Toggle right panel">
+      <svg class="toggle-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="panel-content">
+      <slot name="panel-right" />
+    </div>
+  </aside>
+)}
+
+{hasBottom && (
+  <aside class="side-panel panel-bottom" id="panel-bottom" data-panel="bottom" aria-label="Bottom panel">
+    <button class="panel-toggle" data-target="panel-bottom" aria-expanded="false" aria-label="Toggle bottom panel">
+      <svg class="toggle-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="panel-content">
+      <slot name="panel-bottom" />
+    </div>
+  </aside>
+)}
+
+{hasTop && (
+  <aside class="side-panel panel-top" id="panel-top" data-panel="top" aria-label="Top panel">
+    <button class="panel-toggle" data-target="panel-top" aria-expanded="false" aria-label="Toggle top panel">
+      <svg class="toggle-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="panel-content">
+      <slot name="panel-top" />
+    </div>
+  </aside>
+)}
+<script>
+  // --- scroll nav ---
+  const scrollNav = document.getElementById('scroll-nav');
+  const scrollTop = document.getElementById('scroll-top');
+  const scrollBottom = document.getElementById('scroll-bottom');
+
+  if (scrollNav && scrollTop && scrollBottom) {
+    const THRESHOLD = 300;
+
+    const updateScrollNav = () => {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight;
+      const winHeight = window.innerHeight;
+      const atTop = scrollY < THRESHOLD;
+      const atBottom = scrollY + winHeight > docHeight - THRESHOLD;
+      const isLongPage = docHeight > winHeight * 1.5;
+
+      scrollNav.classList.toggle('visible', isLongPage);
+      scrollTop.classList.toggle('hidden', atTop);
+      scrollBottom.classList.toggle('hidden', atBottom);
+    };
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => { updateScrollNav(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+    updateScrollNav();
+
+    scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    scrollBottom.addEventListener('click', () => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' }));
+  }
+
+  // --- panels ---
+  document.querySelectorAll('.panel-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = (btn as HTMLElement).dataset.target;
+      if (!targetId) return;
+      const panel = document.getElementById(targetId);
+      if (!panel) return;
+      const isOpen = panel.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.side-panel.open').forEach(panel => {
+        panel.classList.remove('open');
+        const toggle = panel.querySelector('.panel-toggle');
+        toggle?.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+</script>
+<style>
+  /* scroll nav */
+  .scroll-nav {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .scroll-nav.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .scroll-btn {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, opacity 0.25s, transform 0.25s;
+    backdrop-filter: blur(8px);
+  }
+  .scroll-btn:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent);
+  }
+  .scroll-btn.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+
+  /* panels shared */
+  .side-panel {
+    position: fixed;
+    z-index: 800;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
+  }
+  .panel-content {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+  .panel-toggle {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    z-index: 1;
+  }
+  .panel-toggle:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent);
+  }
+  .toggle-icon {
+    transition: transform 0.3s ease;
+  }
+  .side-panel.open .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  /* left panel */
+  .panel-left {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: clamp(240px, 20vw, 320px);
+    transform: translateX(-100%);
+    border-left: none;
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .panel-left.open { transform: translateX(0); }
+  .panel-left .panel-content {
+    height: 100%;
+    padding: 1.25rem;
+    padding-top: 4rem;
+  }
+  .panel-left .panel-toggle {
+    top: 50%;
+    right: -32px;
+    width: 32px;
+    height: 48px;
+    transform: translateY(-50%);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    border-left: none;
+  }
+
+  /* right panel */
+  .panel-right {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: clamp(240px, 20vw, 320px);
+    transform: translateX(100%);
+    border-right: none;
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+  .panel-right.open { transform: translateX(0); }
+  .panel-right .panel-content {
+    height: 100%;
+    padding: 1.25rem;
+    padding-top: 4rem;
+  }
+  .panel-right .panel-toggle {
+    top: 50%;
+    left: -32px;
+    width: 32px;
+    height: 48px;
+    transform: translateY(-50%);
+    border-radius: var(--radius) 0 0 var(--radius);
+    border-right: none;
+  }
+
+  /* bottom panel */
+  .panel-bottom {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: clamp(120px, 20vh, 240px);
+    transform: translateY(100%);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .panel-bottom.open { transform: translateY(0); }
+  .panel-bottom .panel-content {
+    height: 100%;
+    padding: 1rem 1.5rem;
+    overflow-x: auto;
+  }
+  .panel-bottom .panel-toggle {
+    left: 50%;
+    top: -32px;
+    width: 48px;
+    height: 32px;
+    transform: translateX(-50%);
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: none;
+  }
+
+  /* top panel */
+  .panel-top {
+    left: 0;
+    right: 0;
+    top: 0;
+    height: clamp(120px, 20vh, 240px);
+    transform: translateY(-100%);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+  .panel-top.open { transform: translateY(0); }
+  .panel-top .panel-content {
+    height: 100%;
+    padding: 1rem 1.5rem;
+    padding-top: 3.5rem;
+  }
+  .panel-top .panel-toggle {
+    left: 50%;
+    bottom: -32px;
+    width: 48px;
+    height: 32px;
+    transform: translateX(-50%);
+    border-radius: 0 0 var(--radius) var(--radius);
+    border-top: none;
+  }
+
+  /* mobile adjustments */
+  @media (max-width: 768px) {
+    .panel-left, .panel-right {
+      width: 85vw;
+    }
+    .scroll-nav {
+      right: 0.75rem;
+      bottom: 0.75rem;
+    }
+    .scroll-btn {
+      width: 32px;
+      height: 32px;
+    }
+  }
+</style>

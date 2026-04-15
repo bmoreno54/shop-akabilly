@@ -1,0 +1,275 @@
+---
+// Checkout page — Square Web Payments SDK
+// Genre: Commerce / Transaction Surface
+// Water Cycle Position: Precipitate → the moment art becomes product in someone's hands
+// Future Directions: Apple Pay, Google Pay, afterpay via Square payment methods
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Checkout" description="Complete your purchase">
+  <section class="checkout container">
+    <div class="checkout-grid">
+      <div class="order-summary" id="order-summary">
+        <h2 class="section-label">Order summary</h2>
+        <div class="summary-item" id="summary-item">
+          <img id="summary-image" src="" alt="" class="summary-thumb" />
+          <div class="summary-details">
+            <p class="summary-title" id="summary-title"></p>
+            <p class="summary-variant" id="summary-variant"></p>
+          </div>
+          <p class="summary-price" id="summary-price"></p>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span id="summary-total-price"></span>
+        </div>
+      </div>
+
+      <div class="payment-section">
+        <h1 class="checkout-title">Checkout</h1>
+        <form id="shipping-form" class="shipping-form">
+          <h2 class="section-label">Shipping address</h2>
+          <div class="form-row">
+            <input type="text" name="name" placeholder="Full name" required class="form-input" />
+          </div>
+          <div class="form-row">
+            <input type="email" name="email" placeholder="Email" required class="form-input" />
+          </div>
+          <div class="form-row">
+            <input type="text" name="line1" placeholder="Address line 1" required class="form-input" />
+          </div>
+          <div class="form-row">
+            <input type="text" name="line2" placeholder="Address line 2 (optional)" class="form-input" />
+          </div>
+          <div class="form-row form-row-split">
+            <input type="text" name="city" placeholder="City" required class="form-input" />
+            <input type="text" name="state" placeholder="State" required class="form-input" />
+            <input type="text" name="postalCode" placeholder="ZIP" required class="form-input" />
+          </div>
+          <div class="form-row">
+            <select name="country" required class="form-input">
+              <option value="US">United States</option>
+              <option value="CA">Canada</option>
+              <option value="GB">United Kingdom</option>
+              <option value="AU">Australia</option>
+            </select>
+          </div>
+        </form>
+        <h2 class="section-label">Payment</h2>
+        <div id="card-container"></div>
+        <div id="payment-status" class="payment-status"></div>
+        <button id="pay-button" class="pay-button" disabled>
+          Pay now
+        </button>
+        <p class="pay-note">Secure payment via Square. Print fulfilled by Prodigi.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script is:inline src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+<script is:inline>
+  // -- Config (swap sandbox for production when live) --
+  // These will come from env vars in production
+  const SQUARE_APP_ID = 'sandbox-replace-me';
+  const SQUARE_LOCATION_ID = 'sandbox-replace-me';
+  const API_BASE = '/api'; // Cloudflare Worker endpoint
+
+  // -- Read cart from URL params --
+  const params = new URLSearchParams(window.location.search);
+  const productSlug = params.get('product') || 'lode';
+  const variantId = params.get('variant') || 'lode-12x12';
+  // -- Product data (mirrors products.json, loaded client-side for now) --
+  const PRODUCTS = {
+    'lode': {
+      title: 'Lode',
+      image: '/images/lode.jpg',
+      variants: {
+        'lode-12x12': { size: '12" x 12"', price: 2500, prodigi_sku: 'GLOBAL-FAP-12x12' },
+        'lode-16x16': { size: '16" x 16"', price: 4000, prodigi_sku: 'GLOBAL-FAP-16x16' },
+        'lode-20x20': { size: '20" x 20"', price: 6500, prodigi_sku: 'GLOBAL-FAP-20x20' },
+      }
+    }
+  };
+
+  const product = PRODUCTS[productSlug];
+  const variant = product?.variants[variantId];
+
+  // -- Populate order summary --
+  if (product && variant) {
+    document.getElementById('summary-image').src = product.image;
+    document.getElementById('summary-image').alt = product.title;
+    document.getElementById('summary-title').textContent = product.title;
+    document.getElementById('summary-variant').textContent = `Fine art giclée — ${variant.size}`;
+    document.getElementById('summary-price').textContent = `$${(variant.price / 100).toFixed(0)}`;
+    document.getElementById('summary-total-price').textContent = `$${(variant.price / 100).toFixed(0)}`;
+  }
+  // -- Initialize Square Web Payments SDK --
+  async function initPayments() {
+    if (!window.Square) {
+      console.error('Square SDK not loaded');
+      return;
+    }
+    const payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
+    const card = await payments.card();
+    await card.attach('#card-container');
+    document.getElementById('pay-button').disabled = false;
+
+    document.getElementById('pay-button').addEventListener('click', async () => {
+      const btn = document.getElementById('pay-button');
+      const status = document.getElementById('payment-status');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+      status.textContent = '';
+      status.className = 'payment-status';
+
+      try {
+        // Tokenize the card
+        const result = await card.tokenize();
+        if (result.status !== 'OK') {
+          throw new Error(result.errors?.[0]?.message || 'Card tokenization failed');
+        }
+        // Gather shipping info
+        const form = document.getElementById('shipping-form');
+        const formData = new FormData(form);
+        const shipping = Object.fromEntries(formData.entries());
+
+        // Send to our API (Cloudflare Worker)
+        const response = await fetch(`${API_BASE}/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sourceId: result.token,
+            productSlug,
+            variantId,
+            amount: variant.price,
+            currency: 'USD',
+            shipping
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Payment failed');
+
+        // Success!
+        status.textContent = 'Payment successful! Your print is being prepared.';
+        status.className = 'payment-status success';
+        btn.textContent = 'Order placed';
+
+        // Redirect to confirmation
+        if (data.orderId) {
+          setTimeout(() => {
+            window.location.href = `/checkout/confirmation?order=${data.orderId}`;
+          }, 2000);
+        }
+      } catch (err) {
+        status.textContent = err.message;
+        status.className = 'payment-status error';
+        btn.disabled = false;
+        btn.textContent = 'Pay now';
+      }
+    });
+  }
+
+  initPayments();
+</script>
+<style>
+  .checkout { padding: 3rem 1.5rem; }
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .checkout-grid { grid-template-columns: 1fr; }
+  }
+  .checkout-title {
+    font-size: 1.75rem; font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .order-summary {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+  .summary-item {
+    display: flex; align-items: center;
+    gap: 1rem; margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }  .summary-thumb {
+    width: 64px; height: 64px;
+    border-radius: 4px; object-fit: cover;
+  }
+  .summary-details { flex: 1; }
+  .summary-title { font-weight: 600; }
+  .summary-variant {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .summary-price {
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+  .summary-total {
+    display: flex; justify-content: space-between;
+    font-weight: 700; font-size: 1.125rem;
+  }
+  .shipping-form { margin-bottom: 2rem; }
+  .form-row { margin-bottom: 0.75rem; }
+  .form-row-split {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .form-input {
+    width: 100%; padding: 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    font-size: 0.9375rem;
+  }  .form-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  #card-container {
+    min-height: 60px;
+    margin-bottom: 1rem;
+  }
+  .pay-button {
+    display: block; width: 100%; padding: 0.875rem;
+    background: var(--color-accent); color: #0a0a0a;
+    font-size: 1rem; font-weight: 600; border: none;
+    border-radius: var(--radius); cursor: pointer;
+    transition: background 0.2s; margin-bottom: 0.5rem;
+  }
+  .pay-button:hover:not(:disabled) { background: var(--color-accent-hover); }
+  .pay-button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pay-note {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+  .payment-status {
+    padding: 0.5rem; margin-bottom: 0.75rem;
+    border-radius: var(--radius); font-size: 0.875rem;
+    text-align: center;
+  }
+  .payment-status.success {
+    background: #1a3a1a; color: #6fcf6f;
+    border: 1px solid #2a5a2a;
+  }
+  .payment-status.error {
+    background: #3a1a1a; color: #cf6f6f;
+    border: 1px solid #5a2a2a;
+  }
+</style>

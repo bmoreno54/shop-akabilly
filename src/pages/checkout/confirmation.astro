@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="Order Confirmed" description="Your order has been placed">
+  <section class="confirmation container">
+    <div class="confirm-card">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="check-icon">
+        <circle cx="24" cy="24" r="22" stroke="#6fcf6f" stroke-width="3"/>
+        <path d="M14 24l7 7 13-13" stroke="#6fcf6f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h1>Order confirmed</h1>
+      <p class="order-id">Order <span id="order-id-display"></span></p>
+      <p>Your fine art print is being prepared by Prodigi and will ship directly to you. You'll receive a shipping confirmation email when it's on its way.</p>
+      <a href="/" class="back-link">&larr; Back to shop</a>
+    </div>
+  </section>
+</Base>
+
+<script is:inline>
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order');
+  if (orderId) {
+    document.getElementById('order-id-display').textContent = `#${orderId}`;
+  }
+</script>
+
+<style>
+  .confirmation { padding: 4rem 1.5rem; text-align: center; }
+  .confirm-card {
+    max-width: 480px; margin: 0 auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+  }
+  .check-icon { margin: 0 auto 1.5rem; display: block; }
+  .confirm-card h1 {
+    font-size: 1.5rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .order-id {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .confirm-card p { line-height: 1.7; margin-bottom: 1.5rem; }
+  .back-link { font-weight: 500; }
+</style>

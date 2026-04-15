@@ -1,0 +1,12 @@
+name = "shop-akabilly-api"
+main = "checkout.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables — set these via:
+#   wrangler secret put SQUARE_ACCESS_TOKEN
+#   wrangler secret put SQUARE_LOCATION_ID
+#   wrangler secret put PRODIGI_API_KEY
+#   wrangler secret put PRINT_IMAGE_URL
+
+[vars]
+PRODIGI_ENV = "sandbox"

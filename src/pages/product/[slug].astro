@@ -60,7 +60,10 @@ const { product } = Astro.props;
 <script>
   const btn = document.getElementById('buy-btn');
   btn?.addEventListener('click', () => {
-    alert('Checkout coming soon — Square Web Payments integration in progress.');
+    const selected = document.querySelector('input[name="variant"]:checked');
+    if (selected) {
+      window.location.href = `/checkout/?product=${window.location.pathname.split('/').pop()}&variant=${selected.value}`;
+    }
   });
 </script>
 

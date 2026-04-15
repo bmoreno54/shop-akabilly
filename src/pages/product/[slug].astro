@@ -1,0 +1,159 @@
+---
+import Base from '../../layouts/Base.astro';
+import products from '../../data/products.json';
+
+export function getStaticPaths() {
+  return products.map(p => ({ params: { slug: p.slug }, props: { product: p } }));
+}
+
+const { product } = Astro.props;
+---
+
+<Base title={product.title} description={product.description}>
+  <article class="product-detail container">
+    <div class="product-image">
+      <img src={product.image} alt={product.title} />
+    </div>
+
+    <div class="product-info">
+      <h1 class="product-title">{product.title}</h1>
+      <p class="product-meta">{product.medium} &middot; {product.year}</p>
+      <p class="product-description">{product.description}</p>
+
+      <div class="provenance-badge">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{product.provenance}</span>
+      </div>
+      <div class="variants">
+        <h2 class="section-label">Select size</h2>
+        {product.variants.map((v: any, i: number) => (
+          <label class="variant-option">
+            <input type="radio" name="variant" value={v.id} checked={i === 0} />
+            <span class="variant-inner">
+              <span class="variant-size">{v.size}</span>
+              <span class="variant-desc">{v.description}</span>
+              <span class="variant-price">${(v.price / 100).toFixed(0)}</span>
+            </span>
+          </label>
+        ))}
+      </div>
+
+      <button class="buy-button" id="buy-btn">
+        Add to cart
+      </button>
+      <p class="buy-note">Fine art giclée print on archival paper. Printed and shipped by Prodigi.</p>
+
+      {product.pairedWith && (
+        <div class="paired-with">
+          <h2 class="section-label">Paired with</h2>
+          <a href={product.pairedWith.url} class="paired-link" target="_blank" rel="noopener">
+            {product.pairedWith.title} on {product.pairedWith.platform} &rarr;
+          </a>
+        </div>
+      )}
+    </div>
+  </article>
+</Base>
+<script>
+  const btn = document.getElementById('buy-btn');
+  btn?.addEventListener('click', () => {
+    alert('Checkout coming soon — Square Web Payments integration in progress.');
+  });
+</script>
+
+<style>
+  .product-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 3rem 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .product-detail { grid-template-columns: 1fr; gap: 2rem; }
+  }
+  .product-image {
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #111;
+    aspect-ratio: 1;
+  }
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }  .product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+  .product-meta {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+  .product-description {
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+  }
+  .provenance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .variants { margin-bottom: 1.5rem; }
+  .variant-option { display: block; cursor: pointer; margin-bottom: 0.5rem; }
+  .variant-option input { display: none; }
+  .variant-inner {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .variant-option input:checked + .variant-inner {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+  .variant-option:hover .variant-inner { background: var(--color-surface-hover); }
+  .variant-size { font-weight: 600; min-width: 6rem; }
+  .variant-desc { flex: 1; font-size: 0.8125rem; color: var(--color-text-muted); }
+  .variant-price { font-weight: 600; color: var(--color-accent); }
+  .buy-button {
+    display: block; width: 100%; padding: 0.875rem;
+    background: var(--color-accent); color: #0a0a0a;
+    font-size: 1rem; font-weight: 600; border: none;
+    border-radius: var(--radius); cursor: pointer;
+    transition: background 0.2s; margin-bottom: 0.75rem;  }
+  .buy-button:hover { background: var(--color-accent-hover); }
+  .buy-note {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .paired-with {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .paired-link { font-weight: 500; }
+</style>

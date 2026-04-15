@@ -1,0 +1,71 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  price: number;
+}
+const { slug, title, subtitle, image, price } = Astro.props;
+const formattedPrice = `$${(price / 100).toFixed(0)}`;
+---
+
+<a href={`/product/${slug}`} class="product-card">
+  <div class="card-image">
+    <img src={image} alt={title} loading="lazy" />
+  </div>
+  <div class="card-info">
+    <h3 class="card-title">{title}</h3>
+    <p class="card-subtitle">{subtitle}</p>
+    <p class="card-price">From {formattedPrice}</p>
+  </div>
+</a>
+
+<style>
+  .product-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .product-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+  .card-image {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #111;
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .product-card:hover .card-image img {
+    transform: scale(1.03);
+  }
+  .card-info {
+    padding: 1rem;
+  }
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .card-subtitle {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .card-price {
+    font-size: 0.9375rem;
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+</style>

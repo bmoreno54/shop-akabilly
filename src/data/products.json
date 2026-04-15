@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "lode",
+    "catalogId": "lode",
+    "title": "Lode",
+    "subtitle": "Mixed media on canvas",
+    "description": "Acrylic, oil pastels, chalk pastels, pens, pencils, and markers on canvas. Part of the foundational akabilly collection, paired with the song of the same name.",
+    "image": "/images/lode.jpg",
+    "artist": "akabilly",
+    "year": "2022",
+    "medium": "Mixed media on canvas",
+    "provenance": "Hand-made original — no AI involvement",
+    "variants": [
+      { "id": "lode-12x12", "size": "12\" x 12\"", "price": 2500, "description": "Fine art giclée print" },
+      { "id": "lode-16x16", "size": "16\" x 16\"", "price": 4000, "description": "Fine art giclée print" },
+      { "id": "lode-20x20", "size": "20\" x 20\"", "price": 6500, "description": "Fine art giclée print" }
+    ],
+    "pairedWith": {
+      "title": "Lode (song)",
+      "platform": "SoundCloud",
+      "url": "https://soundcloud.com/akabilly"
+    },
+    "tags": ["painting", "mixed-media", "impreschernism"]
+  }
+]

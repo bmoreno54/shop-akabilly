@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import products from '../data/products.json';
+---
+
+<Base title="Shop" description="Original art prints and music by akabilly">
+  <section class="hero">
+    <div class="container">
+      <h1>akabilly<span class="dot">.</span>shop</h1>
+      <p class="hero-sub">Original art. Hand-made. Shipped to your door.</p>
+    </div>
+  </section>
+
+  <section class="products-grid container">
+    {products.map(product => (
+      <ProductCard
+        slug={product.slug}
+        title={product.title}
+        subtitle={product.subtitle}
+        image={product.image}
+        price={product.variants[0].price}
+      />
+    ))}
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding: 4rem 0 3rem;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+  .dot { color: var(--color-accent); }
+  .hero-sub {
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+  }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding-bottom: 3rem;
+  }
+</style>

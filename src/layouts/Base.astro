@@ -1,0 +1,87 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'Original art and music by akabilly' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content={description} />
+  <title>{title} | shop.akabilly.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">akabilly<span class="logo-dot">.</span>shop</a>
+      <nav>
+        <a href="https://akabilly.com" class="nav-link">akabilly.com</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; {new Date().getFullYear()} akabilly. All works by Billy Moreno unless noted.</p>
+      <p class="footer-links">
+        <a href="https://instagram.com/a_k_abilly">Instagram</a>
+        <span class="sep">&middot;</span>
+        <a href="https://soundcloud.com/akabilly">SoundCloud</a>
+        <span class="sep">&middot;</span>
+        <a href="https://akabilly.com">Home</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 0;
+  }
+  .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+  }
+  .logo-dot { color: var(--color-accent); }
+  .nav-link {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .nav-link:hover { color: var(--color-text); }
+
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    padding: 2rem 0;
+    margin-top: 4rem;
+  }
+  .footer-inner {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .footer-links { margin-top: 0.5rem; }
+  .sep { margin: 0 0.5rem; }
+</style>

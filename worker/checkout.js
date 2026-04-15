@@ -85,7 +85,10 @@ export default {
 // -- Square Payments API --
 async function chargeSquare(env, sourceId, amount, currency) {
   const idempotencyKey = crypto.randomUUID();
-  return fetch('https://connect.squareupsandbox.com/v2/payments', {
+  const squareBase = env.SQUARE_ENV === 'live'
+    ? 'https://connect.squareup.com'
+    : 'https://connect.squareupsandbox.com';
+  return fetch(`${squareBase}/v2/payments`, {
     method: 'POST',
     headers: {
       'Square-Version': '2024-01-18',

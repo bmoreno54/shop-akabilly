@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AudioPlayer from '../../components/AudioPlayer.astro';
 import products from '../../data/products.json';
 
 export function getStaticPaths() {
@@ -47,12 +48,12 @@ const { product } = Astro.props;
       <p class="buy-note">Fine art giclée print on archival paper. Printed and shipped by Prodigi.</p>
 
       {product.pairedWith && (
-        <div class="paired-with">
-          <h2 class="section-label">Paired with</h2>
-          <a href={product.pairedWith.url} class="paired-link" target="_blank" rel="noopener">
-            {product.pairedWith.title} on {product.pairedWith.platform} &rarr;
-          </a>
-        </div>
+        <AudioPlayer
+          src={product.audioSrc || ''}
+          title={product.pairedWith.title}
+          externalUrl={product.pairedWith.url}
+          externalPlatform={product.pairedWith.platform}
+        />
       )}
     </div>
   </article>

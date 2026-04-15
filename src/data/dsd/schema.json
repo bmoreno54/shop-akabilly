@@ -2,11 +2,15 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "deaconstruckdead graph schema",
   "description": "Emergent linking engine for the akabilly subdomain mesh. Nodes are content, edges are connections — some authored, most discovered.",
-
   "definitions": {
     "node": {
       "type": "object",
-      "required": ["id", "type", "title", "surface"],
+      "required": [
+        "id",
+        "type",
+        "title",
+        "surface"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -14,10 +18,25 @@
         },
         "type": {
           "type": "string",
-          "enum": ["visual", "audio", "writing", "product", "changelog", "fragment", "video", "collection"],
-          "description": "Content type this node represents"
+          "enum": [
+            "visual",
+            "audio",
+            "writing",
+            "product",
+            "changelog",
+            "fragment",
+            "video",
+            "collection",
+            "line",
+            "phrase",
+            "quote",
+            "section"
+          ],
+          "description": "Content type. Document-level: visual, audio, writing, product, changelog, video, collection. Sub-document: line, phrase, quote, section."
         },
-        "title": { "type": "string" },
+        "title": {
+          "type": "string"
+        },
         "url": {
           "type": "string",
           "description": "Canonical page URL for this node"
@@ -26,31 +45,98 @@
           "type": "object",
           "description": "Display hints for when this node appears in DSD connections",
           "properties": {
-            "thumbnail": { "type": "string", "description": "Image path or null" },
-            "preview": { "type": "string", "description": "Short text excerpt, first line of lyrics, etc." },
-            "medium": { "type": "string", "description": "Human-readable medium label" },
-            "accent": { "type": "string", "description": "Optional color hint derived from content" }
+            "thumbnail": {
+              "type": "string",
+              "description": "Image path or null"
+            },
+            "preview": {
+              "type": "string",
+              "description": "Short text excerpt, first line of lyrics, etc."
+            },
+            "medium": {
+              "type": "string",
+              "description": "Human-readable medium label"
+            },
+            "accent": {
+              "type": "string",
+              "description": "Optional color hint derived from content"
+            }
           }
         },
         "semantic": {
           "type": "object",
           "description": "Machine-readable semantic hooks for AI discovery",
           "properties": {
-            "tags": { "type": "array", "items": { "type": "string" } },
-            "themes": { "type": "array", "items": { "type": "string" }, "description": "AI-derived thematic tags" },
-            "temporalAnchor": { "type": "string", "format": "date", "description": "When this was created" },
-            "provenance": { "type": "string", "description": "Creation method fingerprint" },
-            "textFingerprint": { "type": "string", "description": "Hash or embedding ref for semantic similarity" }
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "themes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "AI-derived thematic tags"
+            },
+            "temporalAnchor": {
+              "type": "string",
+              "format": "date",
+              "description": "When this was created"
+            },
+            "provenance": {
+              "type": "string",
+              "description": "Creation method fingerprint"
+            },
+            "textFingerprint": {
+              "type": "string",
+              "description": "Hash or embedding ref for semantic similarity"
+            }
           }
+        },
+        "parent": {
+          "type": "string",
+          "description": "For sub-document nodes (line, phrase, quote, section): the parent document node ID"
+        },
+        "lineRange": {
+          "type": "object",
+          "description": "For line/phrase/quote nodes: which lines of the parent this covers",
+          "properties": {
+            "start": {
+              "type": "integer",
+              "description": "First line number (1-indexed)"
+            },
+            "end": {
+              "type": "integer",
+              "description": "Last line number (inclusive)"
+            }
+          }
+        },
+        "text": {
+          "type": "string",
+          "description": "For sub-document nodes: the actual text content of this fragment"
         }
       }
     },
     "edge": {
       "type": "object",
-      "required": ["source", "target", "type", "weight", "origin"],
+      "required": [
+        "source",
+        "target",
+        "type",
+        "weight",
+        "origin"
+      ],
       "properties": {
-        "source": { "type": "string", "description": "Source node ID" },
-        "target": { "type": "string", "description": "Target node ID" },
+        "source": {
+          "type": "string",
+          "description": "Source node ID"
+        },
+        "target": {
+          "type": "string",
+          "description": "Target node ID"
+        },
         "type": {
           "type": "string",
           "enum": [
@@ -65,9 +151,15 @@
             "shared-theme",
             "user-path",
             "ai-discovered",
-            "collection-sibling"
+            "collection-sibling",
+            "part-of",
+            "quotes",
+            "echoes-in",
+            "responds-to",
+            "continues-from",
+            "contrasts-with"
           ],
-          "description": "Edge type. First six are authored, rest are discovered."
+          "description": "Edge type. Authored: pairs-with, cover-art-for, remix-of, stem-of, forked-from, lyrics-for. Discovered: temporal-proximity, semantic-echo, shared-theme, user-path, ai-discovered, collection-sibling. Sub-document: part-of, quotes, echoes-in, responds-to, continues-from, contrasts-with."
         },
         "weight": {
           "type": "number",
@@ -77,7 +169,16 @@
         },
         "origin": {
           "type": "string",
-          "enum": ["authored", "catalog", "activity", "ai-shadow", "temporal", "semantic"],
+          "enum": [
+            "authored",
+            "catalog",
+            "activity",
+            "ai-shadow",
+            "temporal",
+            "semantic",
+            "quote",
+            "structural"
+          ],
           "description": "How this edge was created. Authored = hand-placed. Others are discovered."
         },
         "confidence": {
@@ -102,20 +203,44 @@
         }
       }
     },
-
     "remix": {
       "type": "object",
       "description": "A remix layer on a writing. Lives inside the parent entry, accessible via hash fragment (#remixSlug). Author-locked original stays untouched — remixes are additive layers.",
-      "required": ["slug", "author", "body", "created"],
+      "required": [
+        "slug",
+        "author",
+        "body",
+        "created"
+      ],
       "properties": {
-        "slug": { "type": "string", "description": "URL fragment identifier, e.g. 'brandisremix'" },
-        "author": { "type": "string" },
-        "title": { "type": "string", "description": "Optional remix title" },
-        "body": { "type": "string", "description": "The remixed text" },
-        "created": { "type": "string", "format": "date" },
+        "slug": {
+          "type": "string",
+          "description": "URL fragment identifier, e.g. 'brandisremix'"
+        },
+        "author": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "description": "Optional remix title"
+        },
+        "body": {
+          "type": "string",
+          "description": "The remixed text"
+        },
+        "created": {
+          "type": "string",
+          "format": "date"
+        },
         "type": {
           "type": "string",
-          "enum": ["remix", "annotation", "critique", "translation", "fork"],
+          "enum": [
+            "remix",
+            "annotation",
+            "critique",
+            "translation",
+            "fork"
+          ],
           "description": "What kind of derivative this is"
         },
         "promoted": {
@@ -126,8 +251,14 @@
         "stats": {
           "type": "object",
           "properties": {
-            "views": { "type": "integer", "default": 0 },
-            "shares": { "type": "integer", "default": 0 }
+            "views": {
+              "type": "integer",
+              "default": 0
+            },
+            "shares": {
+              "type": "integer",
+              "default": 0
+            }
           }
         }
       }

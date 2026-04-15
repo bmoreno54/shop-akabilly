@@ -52,8 +52,13 @@ const typeLabels: Record<string, string> = {
     )}
 
     <div class="writing-body" id="writing-body" data-slug={writing.slug} data-remixes={remixJSON}>
-      {lines.map((line: string) => (
-        line.trim() === '' ? <br /> : <p class="writing-line">{line}</p>
+      {lines.map((line: string, i: number) => (
+        line.trim() === '' ? <br /> : (
+          <p class="writing-line" id={`L${i + 1}`} data-line={i + 1}>
+            <a class="line-anchor" href={`#L${i + 1}`} aria-label={`Line ${i + 1}`}>{i + 1}</a>
+            <span class="line-text">{line}</span>
+          </p>
+        )
       ))}
     </div>
 
@@ -230,7 +235,169 @@ const typeLabels: Record<string, string> = {
     color: var(--color-accent);
   }
   .back-link:hover { color: var(--color-accent-hover); }
+
+  /* line-level addressability */
+  .writing-line {
+    position: relative;
+    display: flex;
+    gap: 0;
+    align-items: baseline;
+  }
+  .line-anchor {
+    position: absolute;
+    left: -2.5rem;
+    width: 2rem;
+    text-align: right;
+    font-size: 0.625rem;
+    font-family: var(--font-body);
+    color: transparent;
+    text-decoration: none;
+    user-select: none;
+    transition: color 0.15s;
+    line-height: inherit;
+    padding-top: 0.1rem;
+  }
+  .writing-line:hover .line-anchor,
+  .writing-line.quoted .line-anchor {
+    color: var(--color-text-muted);
+  }
+  .writing-line.quoted {
+    background: rgba(212, 168, 83, 0.08);
+    border-left: 2px solid var(--color-accent);
+    margin-left: -0.75rem;
+    padding-left: 0.75rem;
+    border-radius: 0 2px 2px 0;
+  }
+  .line-text {
+    flex: 1;
+  }
+  .quote-toast {
+    position: fixed;
+    bottom: 4rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(1rem);
+    background: var(--color-surface);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 1000;
+  }
+  .quote-toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .quote-toast button {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    text-decoration: underline;
+  }
 </style>
+
+
+<script>
+  // Line-level quote system
+  // Click line number: highlight + update URL
+  // Shift-click: range selection
+  // Copy link from toast notification
+  (() => {
+    const body = document.getElementById('writing-body');
+    if (!body) return;
+    const slug = body.dataset.slug;
+
+    // Create toast
+    const toast = document.createElement('div');
+    toast.className = 'quote-toast';
+    toast.innerHTML = '<span class="toast-text"></span><button class="copy-link-btn">copy link</button>';
+    document.body.appendChild(toast);
+    const toastText = toast.querySelector('.toast-text');
+    const copyBtn = toast.querySelector('.copy-link-btn');
+
+    let lastClicked = null;
+    let toastTimer = null;
+
+    function clearQuotes() {
+      body.querySelectorAll('.writing-line.quoted').forEach(el => el.classList.remove('quoted'));
+    }
+
+    function highlightRange(start, end) {
+      clearQuotes();
+      const from = Math.min(start, end);
+      const to = Math.max(start, end);
+      for (let i = from; i <= to; i++) {
+        const line = document.getElementById('L' + i);
+        if (line) line.classList.add('quoted');
+      }
+      // Update URL
+      const frag = from === to ? 'L' + from : 'L' + from + '-L' + to;
+      history.replaceState(null, '', '#' + frag);
+      // Show toast
+      const count = to - from + 1;
+      toastText.textContent = count === 1 ? 'line ' + from + ' selected' : 'lines ' + from + '-' + to + ' selected';
+      toast.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('visible'), 4000);
+    }
+
+    // Line anchor clicks
+    body.addEventListener('click', (e) => {
+      const anchor = e.target.closest('.line-anchor');
+      if (!anchor) return;
+      e.preventDefault();
+      const line = anchor.closest('.writing-line');
+      const num = parseInt(line.dataset.line);
+
+      if (e.shiftKey && lastClicked !== null) {
+        highlightRange(lastClicked, num);
+      } else {
+        highlightRange(num, num);
+        lastClicked = num;
+      }
+    });
+
+    // Copy link button
+    copyBtn.addEventListener('click', () => {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        toastText.textContent = 'link copied';
+        setTimeout(() => toast.classList.remove('visible'), 1500);
+      });
+    });
+
+    // Handle initial hash (line or range)
+    function parseHash() {
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+      // Single line: #L5
+      const single = hash.match(/^L(\d+)$/);
+      if (single) {
+        const n = parseInt(single[1]);
+        highlightRange(n, n);
+        document.getElementById('L' + n)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // Range: #L3-L7
+      const range = hash.match(/^L(\d+)-L(\d+)$/);
+      if (range) {
+        const from = parseInt(range[1]);
+        const to = parseInt(range[2]);
+        highlightRange(from, to);
+        document.getElementById('L' + from)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    parseHash();
+    window.addEventListener('hashchange', parseHash);
+  })();
+</script>
 
 <script>
   // Remix layer switching

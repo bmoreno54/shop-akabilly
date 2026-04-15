@@ -1,0 +1,32 @@
+{
+  "slug": "may-5th-2021-2",
+  "title": "May 5th, 2021 (2)",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2021",
+  "date": "2021-05-05",
+  "description": "Lyrics from May 5th, 2021 (2)",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "- professional\n    - we all humin lyrics\n        - we all humin\n        - and i will hume until i stop moving",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

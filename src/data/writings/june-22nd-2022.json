@@ -1,0 +1,32 @@
+{
+  "slug": "june-22nd-2022",
+  "title": "June 22nd, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-06-22",
+  "description": "Lyrics from June 22nd, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics phoenix\n\npowered by the pyre in my chest i fly higher\nreborn in burning passion i cry fire\n\nhttps://trello.com/c/jsufzzyc",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

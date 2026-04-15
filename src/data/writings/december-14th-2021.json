@@ -1,0 +1,32 @@
+{
+  "slug": "december-14th-2021",
+  "title": "December 14th, 2021",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2021",
+  "date": "2021-12-14",
+  "description": "Lyrics from December 14th, 2021",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\nif i'm casting my life\ni don't wanna read drama plastered on the newspaper\ni wanna see newspaper plastered on the trauma before i send an offer",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

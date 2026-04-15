@@ -1,0 +1,32 @@
+{
+  "slug": "church",
+  "title": "church",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from church",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "verse 1\n\nmy church is kendrick\nhis church is compton\nthat's the difference\nbetween the words we offer\nthat's not deference\ni acknowledge the altar\nthat i burn my sage on\nbefore i get my sage on\nthat's a kindred spirit\ni'm proud to pull a page from\nmy ink, my paper\nhis words and work\ngave seed to my labor\ni think, i drink, and i savor\nthen report my perspective\non how the day was\n\nverse 2\n\nbut what am i supposed to do\nwhen you invent the words i use\nto show what i'm going through\nhiphop precede my emotional truth\nit's the language that i bang with but if i aim it at you\nwe both left hanging\nthat's a dangerous tool\nbut my art is the part that's worth risking it for\nso we stuck in an alley grippin our swords\nan i hope that we both make it out on our own\nbut a hand'll be welcome if i can't stand alone\nand i'm sorry for harming a hair on your head\ni'm tryin be brave but i'm scared uh death",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

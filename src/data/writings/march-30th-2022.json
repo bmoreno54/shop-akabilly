@@ -1,0 +1,32 @@
+{
+  "slug": "march-30th-2022",
+  "title": "March 30th, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-03-30",
+  "description": "Lyrics from March 30th, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\nhot time\nhigh time i wrote a ditty\ni timed it up\nmy time",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

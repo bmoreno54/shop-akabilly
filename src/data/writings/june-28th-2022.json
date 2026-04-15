@@ -1,0 +1,32 @@
+{
+  "slug": "june-28th-2022",
+  "title": "June 28th, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-06-28",
+  "description": "Lyrics from June 28th, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\ni don't let money speak for me\nmy tongue a hundred, i been jammin frankly\nand i don't let money talk to me\ngotta meet my people you wanna parlay properly",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

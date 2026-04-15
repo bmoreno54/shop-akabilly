@@ -1,0 +1,32 @@
+{
+  "slug": "greasy",
+  "title": "greasy",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from greasy",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "make space i slip in\npush me i'm dippin\nif there's friction i fit in",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

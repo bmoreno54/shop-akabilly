@@ -1,0 +1,32 @@
+{
+  "slug": "in-my-yard-is-a-dragon",
+  "title": "in my yard is a dragon",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from in my yard is a dragon",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "in my yard is a dragon\nlooks like a tree when it's blazing\nit burst up out of the pavement\nit's birth causing a cave-in\nthat's what i mean when i say\nthis earth can barely contain the amazement\non the ground all around\nall the gold that it's garden\nbark emblazoned and hardened\nas if someone would dare to come harm them\ni was in awe of it all\nwhat a magnificent monster\ni saw what i saw\nso i let it be what it wants to",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "june-27th-2022",
+  "title": "June 27th, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-06-27",
+  "description": "Lyrics from June 27th, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\nfaith is what you make it, that's the hardest shit since mc ren\ni knew i would make it right then",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

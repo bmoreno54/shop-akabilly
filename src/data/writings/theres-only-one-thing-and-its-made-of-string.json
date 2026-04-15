@@ -1,0 +1,32 @@
+{
+  "slug": "theres-only-one-thing-and-its-made-of-string",
+  "title": "there's only one thing and it's made of string",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from there's only one thing and it's made of string",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "there's only one thing\nand it's made of string\nso when the ball bounce\nthe whole starts to sing\nyou're a song in someone else's mouth\nbut if you didn't exist they couldn't belt it out\ndon't worry about who's in charge of you\nthere's a charge in you\nmake connections you can circuit through\nyou got work to do\nyou got bolts to screw\ninto the sky with a nervous crew\nsaying good bye to the only earth we ever knew\nthought we were so clever too\nsurvived every door we've been stepping through\nhow much could it hurt when i get to you\noh well\nonly time'll tell\ni walk the line\ncuz it's fine as hell\nbreathe in breathe out\nand remind myself\nit's my project\nbut i didn't assign myself\ni see now\ni don't gotta find myself\ni be now\neven when i'm beside myself\nhey now\nlook but don't touch\nlay down\nyou don't have to carry so much\nway down\nthings you can't bear to bring up\nplay out\nright in front of your face",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

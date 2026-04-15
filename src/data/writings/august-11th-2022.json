@@ -1,0 +1,32 @@
+{
+  "slug": "august-11th-2022",
+  "title": "August 11th, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-08-11",
+  "description": "Lyrics from August 11th, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\nbased is the horseshoe [theory](theory)\nis it grounded or illuminary\nis you a star or heavy metal\nimplode, explode, fuck with the levels\nis this too far or too fundamental\na chorus of horns blows but no one's sure it's your angels or devils",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

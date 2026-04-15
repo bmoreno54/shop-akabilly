@@ -1,0 +1,32 @@
+{
+  "slug": "in-my-faith",
+  "title": "in my faith",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from in my faith",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "we strive not to punish people when time wobbles\nlateness needs no explanation. it bears no investigation. it demands no judgment\nwhen i punish someone else thus i am as a time tyrant\nnot as birth, life, and death that say now, now, now to syncopate their own rhythm\nbut as plague, war, and poverty whispering (in the voices of gods) huddle, huddle, huddle\nnowhere else is safe now but here\nno when else is safe here but now\nwhen i punish myself for time wobbles i am as a martyr\nnot as seed scattered, carcass rotting, star exploding shouting go, go, go\nbut as sullen spouse, inflated ego, falling empire biting their words until they pop",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

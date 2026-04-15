@@ -1,0 +1,32 @@
+{
+  "slug": "may-22nd-2022",
+  "title": "May 22nd, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-05-22",
+  "description": "Lyrics from May 22nd, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\ni'm as chaotic as you\nbut a lot slower to move\ngot a tool that i use\ndon't just show it to prove\ni'm as melodic as toons\nlines got lines written into em",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "bodied",
+  "title": "bodied",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from bodied",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "https://soundcloud.com/billy-moreno/bodied?in=billy-moreno/sets/scrub/\n\n\n\nverse 1\n\nmy body's a temple so i gilt it with gold\ncatch me writing on the walls i'm trying to fill it with soul\nmother nature built it and it's never been sold\nso when she come collecting bet that i'm a let go\nwhoa\n\nverse 2\n\nmy body is mulch, so much soul for the soil\nmy life is a river, bank follow the flow\nmy mind is a trap, it keeps me in the hunt\neverybody wanna clap so i sound like a grunt\nuh\n\nverse 3\n\nyou want me to leave a trail of crumbs when i wander\ni'm in the woods trying to outrun the hunter\nbut i sure do hope we run into each other\nthat'd be dope, i'm a junkie\nthere's two kinds of hunger make we wanna break bread\none's for the body bodhi, the other my head\none feel godly don't he, the others almost dead",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "june-5th-2022",
+  "title": "June 5th, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-06-05",
+  "description": "Lyrics from June 5th, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\nwhen you say i'm missing the point\ni'm like you can come here and see it\nor i can go there so you can show me where\nbut that's not something we seem to be doing\nit's not me missing and misconstruing\ni'm listening and sifting through it\njust like i expect that you've been doing",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

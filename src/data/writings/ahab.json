@@ -1,0 +1,32 @@
+{
+  "slug": "ahab",
+  "title": "ahab",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from ahab",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "aye aye captain\nsnappin two while inside i'm laughin at em\npatch masking the side eye i'm castin at em\nfishin cuz i can't fathom my life\ndeep in the lulls though asking why i'm a wise guy\nwhen if i ever said i was right i lied\nhi my name is just a byline\ni've got a whale to catch\nso that's what i do when i try\nyou could say i'm attached\nwanna catch a ride write about whatever tails splash\nso if i die trying they know i ain't fail cuz i'm bout it\nstarted in a whole then i climbed out it\nnow i'm alone with my soul and sometimes doubt it\ncuz when i get close enough to see it's i i see i'm surrounded still\nbounded\nbill don't\nbill do\nbank hard and toss a payload down it\nbefore it kill you\nhigh tide\nits my time to put this rope back where i found it\nlet go the mast kept me from being grounded\nall these years i couldn't be around cuz i was climbing mountains\nbefore i knew how to come down em\nup here i see the sea is angry\ni used to sleep in the sound\nwhen i use it to hide it doesn't seem so loud in my mind\nit's what keeps me out of the eye in the middle of the maelstrom\nif i got a bow i'm trying fiddle the outcome\nriddle the stars with questions to fashion a legend out of\nto share with my sailors when i see em\nit's a craft i'm proud of\ni'm only human\ni got a thing that i'm doing\nand when i see to it\ni lose sight of the futile\nso yeah you could say i'm mad\nbut i'm ahab",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

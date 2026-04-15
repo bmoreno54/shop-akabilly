@@ -1,0 +1,32 @@
+{
+  "slug": "pattern-monster",
+  "title": "pattern monster",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from pattern monster",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "i'm a pattern monster, a savage\ni see em attack em like i'm famished\nthey scatter like light\ni'm leaping back to back faster\nthan i can track matters\nmatter of fact the facts matter\nbut what provides the energy\ncan it be an mc squaring up ain't an enemy\ni call it the theory of relativity\nlook at me out here fishing for a complement\nbut i forgot to hook my lines\nso you're stuck eating worms\nwishing for some condiments\nit's kinda messed up\nwe 99.9 percent the same stuff\nbut time and space make a difference\nand it's hard to send a signal to the stars\nwhen you're still fighting wars between your parts\nwhen there's growth to harvest there's power to harness\nbut when our arms get short we end up working hardest\ncan't ever empty our pockets\ndying to die with possessions like a pharaoh\nwe all got mummy issues\nhaunting our descendants like where the fuck my chair go\nput it back where i put it back when i put it back against the wall\nso you remember that daddy miss you\nafter all after all i did you i get you",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

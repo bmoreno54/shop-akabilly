@@ -1,0 +1,32 @@
+{
+  "slug": "new-song",
+  "title": "new song",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from new song",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "new song #[roam/templates](roam/templates)\n\nlyrics\n\n\n\ncollaborators\n\n\n\nvideos\n\n\n\nart\n\n\n\nrecordings\n\n\n\nnotes\n\n\n\nother media\n\n\n\ntags",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

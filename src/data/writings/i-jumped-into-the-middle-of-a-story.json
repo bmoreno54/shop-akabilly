@@ -1,0 +1,32 @@
+{
+  "slug": "i-jumped-into-the-middle-of-a-story",
+  "title": "i jumped into the middle of a story",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from i jumped into the middle of a story",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "i jumped into the middle of a story\ncuz i was doing something boring\ni remembered a bit about what you told me\nit all came up dolled up when i was lonely\neverything i thought of was strangely new to me",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "april-27th-2021-2",
+  "title": "April 27th, 2021 (2)",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2021",
+  "date": "2021-04-27",
+  "description": "Lyrics from April 27th, 2021 (2)",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "- daily notes\n    - akabilly\n    - professional\n        - i'm looking for something that might work lyrics\n            - i'm looking for something that might work\n            - y'all find some thing that look like work\n            - so you can clean and jerk while they observe\n            - too busy being productive\n            - to see the honey you get stuck in\n            - when they buzz about pay dirt\n        - game design notes\n            - clone craft is a roguelike action rpg with short and long term progression systems; crafting; character customization; and dynamic interactions between skills, gear, and environment\n            - player chooses one of three available heirdrops (client-ordered objective + clone package (materials + genetics)). player adds quick customizations from available pool (gear with universal rights unlocked, aesthetic customizations, designer genes paid for per instance). player plays rapid aging minigame, the results of which bound the mature clone's mutations. base clone features are guaranteed. player spawns naked and executes run. on run success, player is reimbursed for returned clone and gear materials, paid for run, credited for tech discovery, and player credit rating is updated. on run failure and clone destruction, player's credit rating is updated, player is credited for new genetic material collected from clone remains. after run, player designs one new clone base, then returns to heirdrop screen to find a new semi-random set. player, as a remote clone operator, has a long-term skill-based progression that affects they're control over all the above sequences. player can pause game play and access personal progression menus at any time in any mode. in-run, some gear will be socketed. socketed gear can be fit with a universal rights gem that provides no in-run benefit but does allow the player to use that item on later runs. universal rights gems eventually amortize, reopening the socket for other gems while permanently marking the universal rights. gems are deposited at the end of successful runs. at the st[[[[[[[[art]]]]]]]] of the run, the client may provide gems based on the player's gem account, the client's wealth/gem insurance, and the local/seasonal gem market. gems lost during an unsuccessful run are marked against the player's account and that client's insurance. the player can also upgrade their home and/or work environment as well as move to new planets via space flight\n    - professional",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

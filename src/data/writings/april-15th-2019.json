@@ -1,0 +1,32 @@
+{
+  "slug": "april-15th-2019",
+  "title": "April 15th, 2019",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2019",
+  "date": "2019-04-15",
+  "description": "Lyrics from April 15th, 2019",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "#twitter feed\n\nlyrics\n\ni get my rhythm from the whipping of a flag\n\nin the wind\n\nmight as well be a rag the way i rip it and shred\n\nif this isn't my bag i'm guessing that ain't my wallet\n\nguess this ain't my phone let's see who pick up when i call em\n\nif i rocked the boat let's see who row when i fall in",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

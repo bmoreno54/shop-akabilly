@@ -1,0 +1,32 @@
+{
+  "slug": "brandi-scratch-pag-2",
+  "title": "brandi scratch pag (2)",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from brandi scratch pag (2)",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "- song title\n    - collaborators\n        -\n    - select videos\n        -\n    - select [[[[[[[[art]]]]]]]]\n        -\n    - select recordings\n        -\n    - lyrics\n        -\n    - notes\n        -\n    - other media\n        -\n    - tags\n        -",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

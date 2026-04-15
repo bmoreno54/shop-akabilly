@@ -1,0 +1,32 @@
+{
+  "slug": "this-is-irl",
+  "title": "this is irl",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from this is irl",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "this is me irl\no rly\nthis is my url\nit's [big.ly](http://big.ly/)\ndon't click it\nit can't be trusted\nit's stuffed with those cookies\nthey keep lookin at me\ni will not eat them\nyou should delete them\nthis is me irl",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

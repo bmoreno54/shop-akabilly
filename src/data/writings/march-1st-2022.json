@@ -1,0 +1,32 @@
+{
+  "slug": "march-1st-2022",
+  "title": "March 1st, 2022",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2022",
+  "date": "2022-03-01",
+  "description": "Lyrics from March 1st, 2022",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\ndesiring machine\n\n change pc password to reminder to set shutdown timer\n\n exit paperwork\n\n file for unemployment\n\n fix emulators\n\n nes\n\n snes\n\n genesis\n\n n64",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

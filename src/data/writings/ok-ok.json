@@ -1,0 +1,32 @@
+{
+  "slug": "ok-ok",
+  "title": "ok ok",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from ok ok",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "))}}\n\nok ok\ndid that did that\nnow i feel ok ok\noh wait did i do that\ndo what\ni don't know\ni don't feel so ok\nok wait oh wait oh wait\ni know now how to make it ok",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

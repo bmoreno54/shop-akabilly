@@ -1,0 +1,32 @@
+{
+  "slug": "the-feeling-saying-youre-alive",
+  "title": "the feeling saying you're alive",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from the feeling saying you're alive",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "i’ve been singing saying whispering\nsilent praying crying gibbering\njust to see if you could hear me\ni can’t tell\nso can you tell me if i’m here\ni can’t hear you very well\nwell i don’t listen all too swell\nbut i can hear the music swell\nit’s how i know i’m not too lost\nso please keep singing your own song\ni’ll find the rhythm fore too long\nyou’re the siren, i’m the building burning down\nor maybe it’s the other way around\nit’s hard to tell, it’s always turning\nevery day i’m learning just how dumb and blind i am\nthe smoke gets in your eyes but now and then\nyou find the fire is your friend\nthe warmth your only guide\nthe feeling saying you’re alive",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "this-is-where-we-are",
+  "title": "this is where we are",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from this is where we are",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "https://soundcloud.com/billy-moreno/03102022-this-is-where-we-are\n\n\n\ni got voices in my head\nand i know they're my friends\ncuz every time i spend time with them\ni'm better in the end\ni got choices in my face\nand i know they're mine to take\ncuz every expression i make\nleaves an impression on space\ni got digits in my hand\nbridges that can span\nspace and time if i maintained\nthem but i didn't understand in time\nnow this place is what it is\nand it isn't what i planned\nin my wildest dreams\ni never expected to press beyond the seems\ni got miles on my legs\nbut i don't see my exit yet\nso i settle in and step\ntil there's seed, feed, or sleep i need to get\ni got souls on my feet\nso when i walk the beat\ni don't police\nturn my music to meat\ncuz we all gotta eat\neven in the belly of the beast\ni got the world on my back\nand i can't let it down\ncuz i keep mistaking my faults for the ground\nand i don't feel safe enough for folk to build around\ni got evil in my heart\nand it's tearing me apart\nnot the being or meaning but only seeing it in the dark\ni feel blind in the light waiting for the horror to start\nso when you see me in the shadows please believe i'm here to sharpen my art\nand when you see me at home, remember battles tend to harden and scar, but i'm here cuz this is where we are",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

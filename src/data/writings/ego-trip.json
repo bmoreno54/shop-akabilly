@@ -1,0 +1,32 @@
+{
+  "slug": "ego-trip",
+  "title": "ego trip",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from ego trip",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "we're all strangers in a strange land\ncuz danger is the mainland\nof course we stay lost at sea until we hungry\ncuz off the ship the sharks start hunting\ni'm thirsty  all the time\nmind brined in salt water\ni'm trying to find any fountain\nyouth truth\nyou sharing, what proof?\ni'm looking for a mountain spring i can jump off\ncuz i'd rather drink the world's run off than run off the edge\nmy life is a one off and then the skin slough off again",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

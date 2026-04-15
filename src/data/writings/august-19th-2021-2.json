@@ -1,0 +1,32 @@
+{
+  "slug": "august-19th-2021-2",
+  "title": "August 19th, 2021 (2)",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2021",
+  "date": "2021-08-19",
+  "description": "Lyrics from August 19th, 2021 (2)",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "- daily notes\n    - my 5 communities\n        - private\n            -\n        - family\n            -\n        - professional\n            - 10:12 am, august 19th, 2021\ndownload vlc on laptop\ntags:\n                -\n                -\n            -  10:15 am, august 19th, 2021\nnpp sm[[[[[[[[[[art]]]]]]]]block new photo page]]\ntags: infrastructure\n                -\n                -  user story\n                    - quickly create a new block/page to hold photos\n                        - photo specific naming conventions\n                        - data structure for prompting and capturing info about photos\n                - ---\n                -  #42sm[[[[[[[[art]]]]]]]]block npp new photo/video page\n                    -  <%timeampm%>, <%date:today%>\nvideos/photos of <%input:what are these videos/photos of%>\ntags: <%input:what date are these videos/photos from%>\n                        -\n                - ---\n                -  [[sm[[[[[[[[[[art]]]]]]]]block]]]]testing\n                    -   03:59 pm, august 20th, 2021\nvideos/photos of test subject\ntags: test date\n                        -\n            -\n        - neighborhood\n            -\n        - world\n            -\n- 10:49 am, august 19th, 2021\nthoughts about comp[[[[[[[[art]]]]]]]]mentalizing\ntags: twitter meme dialog\n    -\n    -  me: i don't comp[[[[[[[[art]]]]]]]]mentalize well\n    - you: well it's important here's a trick you can try\n    - me: oh what a relief. you can't either. i was worried you wouldn't understand\n- 11:04 am, august 19th, 2021\nthoughts about tools and tips\ntags: neurodivergence twitter meme dialog\n    -\n    -  me: i can't see the stars cuz i'm blind\n    - you: i've got just the thing for that (grabs your hand and places a telescope in it)\n- 11:00 am, august 19th, 2021\nthursday chat with gabe\ngabe billy\ntags: niantic heavy metal\n    - preview\n        -\n    - minutes\n        -  11:03 am, august 19th, 2021\npersonal sharing\ntags:\n            -\n            -\n        - 11:09 am, august 19th, 2021\nlongitudinal study with players\ntags:\n            -\n            - slow player level progression\n            - lack of narrative draw\n            - ineffective onboarding and tutorialization\n            - bot progression was slow\n            - did not like hard gate blocking game modes until 5\n            - don't like map color scheme\n                - it's muddying and confusing\n                - reactive elements contribute to that\n            - most people said they were most likely to refer the game to someone who does not like pgo\n        - 11:21 am, august 19th, 2021\nrecommending roam research to gabe\ntags:\n            -\n            -\n        - 11:21 am, august 19th, 2021\nhow do we respond to longitudinal study\ntags:\n            -\n            -  gabe sees a path forward\n                - campaign lite system for each bot\n                    - pair autobot with a rival decepticon\n                        - over a series of fights against that rival as they get tougher\n                        - the rival asks specific questions\n                        - find unpedantic ways to suggest strategic connections between autobots, minicons, decepticons, and boost cores\n    - review\n        - quick summary\n            -\n        - action items\n            -\n- 12:26 pm, august 19th, 2021\nlyrics\ntags:\n    -\n    -  i tried to call em\n    - but they stood me up\n-  12:27 pm, august 19th, 2021\nlacey shanholz message\ntags:\n    -\n- 02:24 pm, august 19th, 2021\nvideo: roblox exploiting kids to make games that exploit kids\ntags: youtube\n    -\n    -  https://youtu.be/_gxlaurb1eq\n- 03:48 pm, august 19th, 2021\npomo painting with brandi\ntags:\n    - {{pomo: 5}\n-  04:30 pm, august 19th, 2021\nmove templates and sm[[[[[[[[art]]]]]]]]blocks to bbworld\ntags:\n    -\n    -",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "matter-fact",
+  "title": "matter fact",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "unknown",
+  "date": null,
+  "description": "Lyrics from matter fact",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "what you call materialism i say mysticism\nanimism\nthis gold that’s the color my soul\nrims spinning, that’s how i roll\nrock a diamond piece cuz i’m not whole\nbut i’m shining at least. i’m not coal",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}

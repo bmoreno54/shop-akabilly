@@ -1,0 +1,32 @@
+{
+  "slug": "december-3rd-2021",
+  "title": "December 3rd, 2021",
+  "type": "lyrics",
+  "artist": "akabilly",
+  "year": "2021",
+  "date": "2021-12-03",
+  "description": "Lyrics from December 3rd, 2021",
+  "access": {
+    "original": "author-locked",
+    "permitted": [
+      "fork",
+      "remix",
+      "annotate",
+      "critique",
+      "quote",
+      "share"
+    ]
+  },
+  "audioSrc": null,
+  "externalLinks": [],
+  "body": "lyrics\n\ni fill up the cup\n\nif no one sucks it down\n\ni stop pouring\n\nor in other words\n\nit's not that there's not more in store\n\nyou're in luck\n\nyup",
+  "remixes": [],
+  "remixConfig": {
+    "allowPublicSubmission": false,
+    "featured": null,
+    "abTest": null
+  },
+  "tags": [
+    "lyrics"
+  ]
+}
